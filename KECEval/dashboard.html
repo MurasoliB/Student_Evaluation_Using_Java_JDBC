@@ -1,0 +1,2452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kongu Engineering College - Academic & Continuous Evaluation System (R2024)</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+    h1, h2, h3, h4, .font-heading { font-family: 'Outfit', sans-serif; }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+    
+    /* Styled Smooth Horizontal Scrollbar */
+    .table-scroll-container::-webkit-scrollbar {
+      height: 10px;
+    }
+    .table-scroll-container::-webkit-scrollbar-track {
+      background: #e2e8f0;
+      border-radius: 9999px;
+    }
+    .table-scroll-container::-webkit-scrollbar-thumb {
+      background: #6366f1;
+      border-radius: 9999px;
+      border: 2px solid #e2e8f0;
+    }
+    .table-scroll-container::-webkit-scrollbar-thumb:hover {
+      background: #4f46e5;
+    }
+
+    /* Compact mode styles for grade table */
+    .table-compact th, .table-compact td {
+      padding: 6px 4px !important;
+      font-size: 11px !important;
+    }
+
+    /* Print Architecture - Landscape A4 Full-Width, ZERO Slicing */
+    @page {
+      size: A4 landscape;
+      margin: 8mm 6mm;
+    }
+
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print, header, nav, footer, #toast, .tab-view:not(#view-gradesheet), #tableToolbar, #studentSwitcherCard {
+        display: none !important;
+      }
+      main {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #view-gradesheet {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #printableGradeSheet {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .table-scroll-container, .overflow-x-auto {
+        overflow: visible !important;
+        overflow-x: visible !important;
+        display: block !important;
+        width: 100% !important;
+      }
+      table {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: auto !important;
+        border-collapse: collapse !important;
+        font-size: 8.5pt !important;
+      }
+      th {
+        padding: 4px 3px !important;
+        font-size: 8pt !important;
+        white-space: nowrap !important;
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+      }
+      td {
+        padding: 4px 3px !important;
+        font-size: 8pt !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+      td.course-title-cell {
+        white-space: normal !important;
+        word-break: break-word !important;
+        max-width: 180px !important;
+      }
+      .print-page-break-avoid {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+    }
+    select option {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      font-weight: 600 !important;
+      padding: 6px 10px !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+  <!-- ==================== TOP INSTITUTION HEADER ==================== -->
+  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white shadow-md sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-20">
+        
+        <!-- College Logo & Title -->
+        <div class="flex items-center space-x-4">
+          <div class="w-13 h-13 rounded-2xl bg-gradient-to-tr from-amber-400 via-amber-500 to-yellow-300 p-0.5 shadow-lg shadow-amber-500/20">
+            <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-amber-400 text-2xl font-black">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2.5">
+              <span class="text-xl sm:text-2xl font-black tracking-tight font-heading text-white">KONGU ENGINEERING COLLEGE</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-amber-400 text-slate-950 shadow-xs">AUTONOMOUS</span>
+            </div>
+            <div class="text-xs text-slate-300 flex items-center space-x-2 mt-0.5">
+              <span>Perundurai, Erode - 638060</span>
+              <span class="text-slate-500">•</span>
+              <span class="text-indigo-300 font-bold">Office of the Controller of Examinations</span>
+              <span class="text-slate-500">•</span>
+              <span class="text-amber-300 font-bold">Continuous Academic Evaluation (R2024)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Status & Refresh -->
+        <div class="flex items-center space-x-3">
+          <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 text-xs">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-slate-200">Database: <strong class="text-white">kec_eval (MySQL)</strong></span>
+          </div>
+          <button onclick="refreshAll()" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition border border-white/10 shadow-xs flex items-center space-x-1.5 text-xs font-semibold" title="Refresh Live Data">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span class="hidden sm:inline">Refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Bar -->
+      <nav class="flex space-x-1 sm:space-x-2 py-2.5 border-t border-white/10 overflow-x-auto">
+        <button onclick="showTab('gradesheet')" id="tab-gradesheet" class="nav-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20">
+          <i class="fa-solid fa-file-invoice"></i>
+          <span>Student Grade Sheet & SGPA</span>
+        </button>
+        <button onclick="showTab('overview')" id="tab-overview" class="nav-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition text-slate-300 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Performance Overview</span>
+        </button>
+        <button onclick="showTab('marksentry')" id="tab-marksentry" class="nav-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition text-slate-300 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span>Marks Entry ("Then & Now")</span>
+        </button>
+        <button onclick="showTab('defaulters')" id="tab-defaulters" class="nav-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition text-slate-300 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-user-clock"></i>
+          <span>Attendance Defaulters</span>
+        </button>
+        <button onclick="showTab('management')" id="tab-management" class="nav-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition text-slate-300 hover:text-white hover:bg-white/10">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Multi-Course & Catalog</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: STUDENT GRADE SHEET & SGPA (ALIGNED, PERFECT PRINT & CLEAR GUIDE)  -->
+    <!-- ========================================================================= -->
+    <section id="view-gradesheet" class="tab-view space-y-6">
+      
+      <!-- Interactive Student Switcher Card (Filter by Dept + Sem + Student) -->
+      <div id="studentSwitcherCard" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4 no-print">
+        <div class="flex flex-wrap items-center gap-3">
+          
+          <!-- Department Filter -->
+          <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-0.5">Department:</label>
+            <select id="filterDept" onchange="applyStudentFilters()" class="border border-slate-300 rounded-xl px-3 py-2 text-xs sm:text-sm font-bold text-slate-800 bg-slate-50 focus:ring-2 focus:ring-indigo-500">
+              <option value="ALL">All Departments</option>
+              <option value="IT" selected>IT (Information Tech)</option>
+              <option value="CSE">CSE (Computer Science)</option>
+              <option value="ECE">ECE (Electronics & Comm)</option>
+              <option value="EEE">EEE (Electrical & Electronics)</option>
+              <option value="MECH">MECH (Mechanical)</option>
+              <option value="CIVIL">CIVIL (Civil)</option>
+              <option value="AIDS">AIDS (AI & Data Science)</option>
+              <option value="CHEM">CHEM (Chemical)</option>
+            </select>
+          </div>
+
+          <!-- Semester Filter -->
+          <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-0.5">Semester:</label>
+            <select id="selSemGrade" onchange="applyStudentFilters()" class="border border-slate-300 rounded-xl px-3 py-2 text-xs sm:text-sm font-bold text-slate-800 bg-slate-50 focus:ring-2 focus:ring-indigo-500">
+              <option value="1">Semester 1</option>
+              <option value="2">Semester 2</option>
+              <option value="3" selected>Semester 3</option>
+              <option value="4">Semester 4</option>
+              <option value="5">Semester 5</option>
+              <option value="6">Semester 6</option>
+              <option value="7">Semester 7</option>
+              <option value="8">Semester 8</option>
+              <option value="ALL">All Semesters</option>
+            </select>
+          </div>
+
+          <!-- Student Candidate Selector -->
+          <div>
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-0.5">Candidate Student:</label>
+            <select id="selStudentGrade" onchange="loadGradeSheet()" class="border-2 border-indigo-200 rounded-xl px-4 py-2 text-xs sm:text-sm font-bold text-slate-900 bg-indigo-50/50 focus:ring-2 focus:ring-indigo-500 focus:outline-none min-w-[280px]">
+              <!-- Populated via JS -->
+            </select>
+          </div>
+
+          <div class="pt-4">
+            <button onclick="loadGradeSheet()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm transition flex items-center space-x-1.5">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <span>Load Sheet</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Print Action -->
+        <div class="flex items-center space-x-2 pt-2 sm:pt-0">
+          <button onclick="window.print()" class="px-5 py-2.5 bg-gradient-to-r from-slate-900 to-indigo-950 hover:from-slate-800 hover:to-indigo-900 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md transition flex items-center space-x-2">
+            <i class="fa-solid fa-print text-amber-400"></i>
+            <span>Print Official Mark Sheet (Landscape A4)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Official Institutional Grade Sheet -->
+      <div id="printableGradeSheet" class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
+        
+        <!-- Formal College Seal & Header -->
+        <div class="border-b-2 border-slate-900 pb-5 text-center relative print-page-break-avoid">
+          <div class="text-[11px] font-extrabold tracking-widest text-indigo-700 uppercase">
+            Autonomous Institution • Affiliated to Anna University, Chennai • Approved by AICTE
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black text-slate-900 font-heading tracking-tight mt-1">
+            KONGU ENGINEERING COLLEGE
+          </h2>
+          <p class="text-xs text-slate-500 font-medium">PERUNDURAI, ERODE - 638060, TAMIL NADU, INDIA</p>
+          <div id="sheetDeptHeader" class="inline-block mt-3 px-5 py-1.5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-amber-300 text-xs font-black rounded-lg tracking-wider uppercase shadow-xs">
+            SEMESTER GRADE SHEET • REGULATION 2024 (AUTONOMOUS)
+          </div>
+        </div>
+
+        <!-- Student Profile Identity Strip (Clear, Aligned, Beautiful) -->
+        <div class="bg-gradient-to-r from-slate-50 via-indigo-50/40 to-blue-50/40 rounded-2xl p-5 border border-indigo-100 flex flex-wrap justify-between items-center gap-4 print-page-break-avoid">
+          <div class="flex items-center space-x-4">
+            <div id="studentAvatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-500 text-white font-black text-xl flex items-center justify-center shadow-md shadow-indigo-200">
+              --
+            </div>
+            <div>
+              <div class="text-xs text-indigo-600 font-bold uppercase tracking-wider">Candidate Name</div>
+              <h3 id="repName" class="text-xl font-black text-slate-900 font-heading">Loading...</h3>
+              <div class="text-xs text-slate-500 font-medium mt-0.5">
+                Department of <strong id="repDept" class="text-slate-800">--</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-4 text-xs sm:text-sm">
+            <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-xs">
+              <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Roll Number</span>
+              <span id="repRoll" class="font-black text-indigo-700 font-mono text-base">--</span>
+            </div>
+            <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-xs">
+              <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Semester & Regulation</span>
+              <span id="repSemReg" class="font-black text-slate-900">--</span>
+            </div>
+            <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-xs">
+              <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Date of Evaluation</span>
+              <span id="repDate" class="font-bold text-slate-700">19-10-2026</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Colorful Score KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print-page-break-avoid">
+          
+          <!-- Registered vs Earned Credits -->
+          <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-2xl border border-blue-200/80 shadow-xs flex items-center space-x-3.5">
+            <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl font-bold shadow-sm shadow-blue-200">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <div>
+              <div class="text-[11px] font-bold text-blue-700 uppercase tracking-wider">Credits Cleared</div>
+              <div class="text-2xl font-black text-slate-900 font-heading mt-0.5">
+                <span id="repEarnCredits" class="text-blue-700">0</span> <span class="text-slate-400 text-base font-normal">/</span> <span id="repRegCredits" class="text-slate-600 text-base">0</span>
+              </div>
+              <div class="text-[10px] text-slate-500 font-medium">Enrolled Course Units</div>
+            </div>
+          </div>
+
+          <!-- Semester SGPA -->
+          <div class="bg-gradient-to-br from-amber-50 to-yellow-50 p-4 rounded-2xl border border-amber-200/80 shadow-xs flex items-center space-x-3.5">
+            <div class="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl font-bold shadow-sm shadow-amber-200">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <div>
+              <div class="text-[11px] font-bold text-amber-700 uppercase tracking-wider">Semester SGPA</div>
+              <div class="text-2xl font-black text-slate-900 font-heading mt-0.5">
+                <span id="repSgpa" class="text-amber-600 font-mono">0.00</span> <span class="text-slate-400 text-sm font-normal">/ 10</span>
+              </div>
+              <div class="text-[10px] text-slate-500 font-medium">10-Point Grade Scale</div>
+            </div>
+          </div>
+
+          <!-- Equivalent Percentage -->
+          <div class="bg-gradient-to-br from-purple-50 to-fuchsia-50 p-4 rounded-2xl border border-purple-200/80 shadow-xs flex items-center space-x-3.5">
+            <div class="w-12 h-12 rounded-xl bg-purple-600 text-white flex items-center justify-center text-xl font-bold shadow-sm shadow-purple-200">
+              <i class="fa-solid fa-percent"></i>
+            </div>
+            <div>
+              <div class="text-[11px] font-bold text-purple-700 uppercase tracking-wider">Equivalent %</div>
+              <div class="text-2xl font-black text-purple-700 font-heading mt-0.5 font-mono">
+                <span id="repPercentage">0.00%</span>
+              </div>
+              <div class="text-[10px] text-slate-500 font-medium">Formula: SGPA &times; 10</div>
+            </div>
+          </div>
+
+          <!-- Evaluation Outcome -->
+          <div id="outcomeBox" class="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-200/80 shadow-xs flex items-center space-x-3.5">
+            <div id="outcomeIcon" class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl font-bold shadow-sm shadow-emerald-200">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+              <div class="text-[11px] font-bold text-slate-600 uppercase tracking-wider">Final Outcome</div>
+              <div id="repOutcomeText" class="text-lg font-black text-emerald-800 font-heading mt-0.5 leading-tight">
+                PASSED
+              </div>
+              <div id="repWeightedPoints" class="text-[10px] text-slate-500 font-mono font-medium">Points: 0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TABLE NAVIGATION TOOLBAR ==================== -->
+        <div id="tableToolbar" class="flex flex-wrap justify-between items-center gap-3 pt-2 no-print border-t border-slate-100">
+          <div class="flex items-center space-x-2 text-xs font-bold text-slate-600">
+            <span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg border border-indigo-200">
+              <i class="fa-solid fa-table-list mr-1"></i> 14 Assessment Columns
+            </span>
+            <span class="text-slate-400">•</span>
+            <span class="text-slate-500 font-medium">Use the pan buttons or scrollbar to navigate columns:</span>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <!-- Pan Left Button -->
+            <button type="button" onclick="scrollGradeTable(-250)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center space-x-1 border border-slate-200 shadow-xs" title="Scroll Left">
+              <i class="fa-solid fa-chevron-left"></i>
+              <span>Pan Left</span>
+            </button>
+            <!-- Pan Right Button -->
+            <button type="button" onclick="scrollGradeTable(250)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center space-x-1 border border-slate-200 shadow-xs" title="Scroll Right">
+              <span>Pan Right</span>
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            <!-- Toggle Compact Mode -->
+            <button type="button" onclick="toggleCompactMode()" id="btnCompact" class="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-bold transition border border-indigo-200 shadow-xs flex items-center space-x-1">
+              <i class="fa-solid fa-compress"></i>
+              <span>Fit to Screen</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== THE PERFECT 14-COLUMN GRADE TABLE ==================== -->
+        <div id="gradeTableWrapper" class="table-scroll-container overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
+          <table id="tblGradeReport" class="min-w-full text-xs sm:text-sm divide-y divide-slate-200">
+            <!-- Unified Professional Dark Header -->
+            <thead class="bg-slate-900 text-white font-bold text-center">
+              <tr>
+                <th scope="col" class="py-3.5 px-3 text-left uppercase tracking-wider font-extrabold whitespace-nowrap">Course Code</th>
+                <th scope="col" class="py-3.5 px-4 text-left uppercase tracking-wider font-extrabold min-w-[150px]">Course Title</th>
+                <th scope="col" class="py-3.5 px-2 text-center uppercase tracking-wider whitespace-nowrap">Type</th>
+                <th scope="col" class="py-3.5 px-2 text-center uppercase tracking-wider whitespace-nowrap">Credits</th>
+                <th scope="col" class="py-3.5 px-2 text-center uppercase tracking-wider whitespace-nowrap">Attendance</th>
+                <th scope="col" class="py-3.5 px-2 text-center uppercase tracking-wider whitespace-nowrap">CIA 1<br><span class="text-[9px] font-normal text-slate-400">(100)</span></th>
+                <th scope="col" class="py-3.5 px-2 text-center uppercase tracking-wider whitespace-nowrap">CIA 2<br><span class="text-[9px] font-normal text-slate-400">(100)</span></th>
+                <th scope="col" class="py-3.5 px-2 text-center uppercase tracking-wider whitespace-nowrap">Asg/Lab<br><span class="text-[9px] font-normal text-slate-400">(100)</span></th>
+                <th scope="col" class="py-3.5 px-3 text-center uppercase tracking-wider bg-slate-800 whitespace-nowrap">Scaled CIA<br><span class="text-[9px] font-normal text-slate-300">(40/60/50)</span></th>
+                <th scope="col" class="py-3.5 px-2 text-center uppercase tracking-wider whitespace-nowrap">ESE<br><span class="text-[9px] font-normal text-slate-400">(100)</span></th>
+                <th scope="col" class="py-3.5 px-3 text-center uppercase tracking-wider bg-slate-800 whitespace-nowrap">Scaled ESE<br><span class="text-[9px] font-normal text-slate-300">(60/40/50)</span></th>
+                <th scope="col" class="py-3.5 px-3 text-center uppercase tracking-wider font-extrabold bg-indigo-950 whitespace-nowrap">Total<br><span class="text-[9px] font-normal text-indigo-200">(100)</span></th>
+                <th scope="col" class="py-3.5 px-3 text-center uppercase tracking-wider font-extrabold whitespace-nowrap">Grade</th>
+                <th scope="col" class="py-3.5 px-4 text-left uppercase tracking-wider font-extrabold whitespace-nowrap">Course Result</th>
+              </tr>
+            </thead>
+            <tbody id="tblReportBody" class="divide-y divide-slate-100 bg-white font-medium text-slate-700">
+              <!-- Dynamically populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- GRAND KEC REGULATION 2024 GRADING SYSTEM SHOWCASE (BIGGER & CRYSTAL CLEAR)-->
+        <!-- ========================================================================= -->
+        <div class="mt-8 rounded-3xl bg-slate-50 border-2 border-slate-200 p-6 sm:p-7 space-y-6 print-page-break-avoid">
+          
+          <!-- Header -->
+          <div class="border-b border-slate-200 pb-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-lg font-bold shadow-sm shadow-indigo-200">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </div>
+              <div>
+                <h4 class="text-base sm:text-lg font-black text-slate-900 font-heading">
+                  KEC REGULATION 2024 (R2024) 10-POINT GRADING SYSTEM & EVALUATION RULES
+                </h4>
+                <p class="text-xs text-slate-500 font-medium">Official Autonomous College Grading Scale, Weightages, Passing Thresholds & Attendance Filters</p>
+              </div>
+            </div>
+            <span class="px-3 py-1 bg-amber-400 text-slate-950 rounded-full font-black text-xs uppercase shadow-xs">
+              R2024 Engine
+            </span>
+          </div>
+
+          <!-- 8 Big, Vibrant Grade Point Cards (Larger, Distinct, Super Clear) -->
+          <div>
+            <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5 flex items-center space-x-1.5">
+              <i class="fa-solid fa-star text-amber-500"></i>
+              <span>10-Point Letter Grade Scale & Grade Points (GP)</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 text-center">
+              
+              <!-- Grade O -->
+              <div class="p-3 rounded-2xl bg-emerald-600 text-white shadow-sm flex flex-col justify-between">
+                <div class="text-2xl font-black font-heading">O</div>
+                <div class="text-xs font-extrabold uppercase mt-0.5">10 GP</div>
+                <div class="text-[11px] font-semibold opacity-90 mt-1">91 – 100</div>
+                <div class="text-[9px] font-medium tracking-wide opacity-80 uppercase mt-0.5">Outstanding</div>
+              </div>
+
+              <!-- Grade A+ -->
+              <div class="p-3 rounded-2xl bg-teal-600 text-white shadow-sm flex flex-col justify-between">
+                <div class="text-2xl font-black font-heading">A+</div>
+                <div class="text-xs font-extrabold uppercase mt-0.5">9 GP</div>
+                <div class="text-[11px] font-semibold opacity-90 mt-1">81 – 90</div>
+                <div class="text-[9px] font-medium tracking-wide opacity-80 uppercase mt-0.5">Excellent</div>
+              </div>
+
+              <!-- Grade A -->
+              <div class="p-3 rounded-2xl bg-blue-600 text-white shadow-sm flex flex-col justify-between">
+                <div class="text-2xl font-black font-heading">A</div>
+                <div class="text-xs font-extrabold uppercase mt-0.5">8 GP</div>
+                <div class="text-[11px] font-semibold opacity-90 mt-1">71 – 80</div>
+                <div class="text-[9px] font-medium tracking-wide opacity-80 uppercase mt-0.5">Very Good</div>
+              </div>
+
+              <!-- Grade B+ -->
+              <div class="p-3 rounded-2xl bg-indigo-600 text-white shadow-sm flex flex-col justify-between">
+                <div class="text-2xl font-black font-heading">B+</div>
+                <div class="text-xs font-extrabold uppercase mt-0.5">7 GP</div>
+                <div class="text-[11px] font-semibold opacity-90 mt-1">61 – 70</div>
+                <div class="text-[9px] font-medium tracking-wide opacity-80 uppercase mt-0.5">Good</div>
+              </div>
+
+              <!-- Grade B -->
+              <div class="p-3 rounded-2xl bg-sky-600 text-white shadow-sm flex flex-col justify-between">
+                <div class="text-2xl font-black font-heading">B</div>
+                <div class="text-xs font-extrabold uppercase mt-0.5">6 GP</div>
+                <div class="text-[11px] font-semibold opacity-90 mt-1">50 – 60</div>
+                <div class="text-[9px] font-medium tracking-wide opacity-80 uppercase mt-0.5">Above Average</div>
+              </div>
+
+              <!-- Grade RA -->
+              <div class="p-3 rounded-2xl bg-amber-600 text-white shadow-sm flex flex-col justify-between">
+                <div class="text-2xl font-black font-heading">RA</div>
+                <div class="text-xs font-extrabold uppercase mt-0.5">0 GP</div>
+                <div class="text-[11px] font-semibold opacity-90 mt-1">&lt; 50 Marks</div>
+                <div class="text-[9px] font-medium tracking-wide opacity-80 uppercase mt-0.5">Re-Appearance</div>
+              </div>
+
+              <!-- Grade SA -->
+              <div class="p-3 rounded-2xl bg-rose-600 text-white shadow-sm flex flex-col justify-between">
+                <div class="text-2xl font-black font-heading">SA</div>
+                <div class="text-xs font-extrabold uppercase mt-0.5">0 GP</div>
+                <div class="text-[11px] font-semibold opacity-90 mt-1">&lt; 65% Attd.</div>
+                <div class="text-[9px] font-medium tracking-wide opacity-80 uppercase mt-0.5">Barred (Deficit)</div>
+              </div>
+
+              <!-- Grade AB -->
+              <div class="p-3 rounded-2xl bg-slate-700 text-white shadow-sm flex flex-col justify-between">
+                <div class="text-2xl font-black font-heading">AB</div>
+                <div class="text-xs font-extrabold uppercase mt-0.5">0 GP</div>
+                <div class="text-[11px] font-semibold opacity-90 mt-1">ESE Absent</div>
+                <div class="text-[9px] font-medium tracking-wide opacity-80 uppercase mt-0.5">Absent in ESE</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Weightage Breakdown Matrix (3 Large Cards) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+            
+            <!-- Theory -->
+            <div class="p-4 rounded-2xl bg-blue-50/70 border-2 border-blue-200">
+              <div class="flex justify-between items-center mb-1.5">
+                <span class="font-black text-blue-900 text-sm">THEORY COURSES</span>
+                <span class="px-2 py-0.5 rounded-full bg-blue-600 text-white font-extrabold text-[10px]">40 CIA / 60 ESE</span>
+              </div>
+              <ul class="text-xs text-slate-700 space-y-1 font-medium">
+                <li>• CIA: <strong>40%</strong> (CIA1 35% + CIA2 35% + Asg 30%)</li>
+                <li>• ESE: <strong>60%</strong> (Written Theory Exam)</li>
+                <li>• ESE Min. Threshold: <strong class="text-blue-800">45% (27 out of 60 marks)</strong></li>
+                <li>• Overall Pass Minimum: <strong>50 Marks in Aggregate</strong></li>
+              </ul>
+            </div>
+
+            <!-- Practical -->
+            <div class="p-4 rounded-2xl bg-emerald-50/70 border-2 border-emerald-200">
+              <div class="flex justify-between items-center mb-1.5">
+                <span class="font-black text-emerald-900 text-sm">PRACTICAL COURSES</span>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-extrabold text-[10px]">60 CIA / 40 ESE</span>
+              </div>
+              <ul class="text-xs text-slate-700 space-y-1 font-medium">
+                <li>• CIA: <strong>60%</strong> (Continuous Laboratory Evaluation)</li>
+                <li>• ESE: <strong>40%</strong> (Practical Examination)</li>
+                <li>• ESE Min. Threshold: <strong class="text-emerald-800">50% (20 out of 40 marks)</strong></li>
+                <li>• Overall Pass Minimum: <strong>50 Marks in Aggregate</strong></li>
+              </ul>
+            </div>
+
+            <!-- Embedded -->
+            <div class="p-4 rounded-2xl bg-purple-50/70 border-2 border-purple-200">
+              <div class="flex justify-between items-center mb-1.5">
+                <span class="font-black text-purple-900 text-sm">EMBEDDED COURSES</span>
+                <span class="px-2 py-0.5 rounded-full bg-purple-600 text-white font-extrabold text-[10px]">50 CIA / 50 ESE</span>
+              </div>
+              <ul class="text-xs text-slate-700 space-y-1 font-medium">
+                <li>• CIA: <strong>50%</strong> (Theory Tests + Lab Experiments)</li>
+                <li>• ESE: <strong>50%</strong> (Integrated Theory & Lab Exam)</li>
+                <li>• ESE Min. Threshold: <strong class="text-purple-800">45% (22.5 out of 50 marks)</strong></li>
+                <li>• Overall Pass Minimum: <strong>50 Marks in Aggregate</strong></li>
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- Attendance Eligibility Criteria Strip & Formulas -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+            
+            <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+              <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
+                <i class="fa-solid fa-user-check text-indigo-600"></i>
+                <span>Attendance Eligibility Rules</span>
+              </div>
+              <div class="space-y-1.5 text-xs">
+                <div class="flex items-center space-x-2">
+                  <span class="px-2 py-0.5 rounded-md font-bold bg-emerald-100 text-emerald-800">&ge; 75%</span>
+                  <span class="text-slate-700 font-medium">Fully Eligible to appear in End Semester Examinations.</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="px-2 py-0.5 rounded-md font-bold bg-amber-100 text-amber-800">65% – 74.9%</span>
+                  <span class="text-slate-700 font-medium">Conditionally Eligible (Requires Medical Condonation Approval).</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="px-2 py-0.5 rounded-md font-bold bg-rose-100 text-rose-800">&lt; 65%</span>
+                  <span class="text-slate-700 font-medium">Barred from ESE (Awarded SA Grade with 0 Grade Points).</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
+              <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center space-x-1.5">
+                <i class="fa-solid fa-calculator text-indigo-600"></i>
+                <span>Formulas & Computation</span>
+              </div>
+              <div class="space-y-2 text-xs">
+                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200 font-mono text-indigo-900 font-bold">
+                  SGPA = &Sigma;(Course Credits &times; Grade Points) / &Sigma;(Total Enrolled Credits)
+                </div>
+                <div class="p-2 rounded-xl bg-slate-50 border border-slate-200 font-mono text-indigo-900 font-bold">
+                  Equivalent Percentage = SGPA &times; 10
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: PERFORMANCE OVERVIEW (MULTI-COURSE & DEPARTMENT ANALYTICS)         -->
+    <!-- ========================================================================= -->
+    <section id="view-overview" class="tab-view hidden space-y-6">
+      
+      <!-- Top Metric Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <div class="bg-white p-5 rounded-2xl border-l-4 border-l-indigo-500 border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-13 h-13 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl font-bold">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Registered Students</div>
+            <div id="cardTotalStudents" class="text-3xl font-black text-slate-900 font-heading mt-0.5">--</div>
+            <div class="text-[11px] text-indigo-600 font-semibold">Active Database Records</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border-l-4 border-l-sky-500 border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-13 h-13 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-2xl font-bold">
+            <i class="fa-solid fa-book-bookmark"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Course Catalog</div>
+            <div id="cardTotalCourses" class="text-3xl font-black text-slate-900 font-heading mt-0.5">--</div>
+            <div class="text-[11px] text-sky-600 font-semibold">Theory, Lab & Embedded</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border-l-4 border-l-emerald-500 border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-13 h-13 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-bold">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Class Average SGPA</div>
+            <div id="cardAvgSgpa" class="text-3xl font-black text-emerald-600 font-heading mt-0.5">--</div>
+            <div id="cardPassRateSub" class="text-[11px] text-emerald-700 font-bold">Pass Rate: --%</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border-l-4 border-l-rose-500 border border-slate-200 shadow-sm flex items-center space-x-4">
+          <div class="w-13 h-13 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl font-bold">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">SA Defaulters</div>
+            <div id="cardDefaulters" class="text-3xl font-black text-rose-600 font-heading mt-0.5">--</div>
+            <div class="text-[11px] text-rose-500 font-bold">&lt; 65% Attendance (Barred)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row 1: Course Performance & Pass Rates -->
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 font-heading">Course Performance & Pass Rates Matrix</h3>
+            <p class="text-xs text-slate-500">Live breakdown of pass percentage (%) and average marks scored across all semester courses</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center space-x-1.5">
+              <label class="text-xs font-bold text-slate-600">Department:</label>
+              <select id="selOverviewDept" onchange="loadOverview()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white text-slate-800 focus:ring-2 focus:ring-indigo-500 shadow-xs">
+                <option value="ALL" selected>All Departments</option>
+                <option value="IT">IT (Information Tech)</option>
+                <option value="CSE">CSE (Computer Science)</option>
+                <option value="ECE">ECE (Electronics & Comm)</option>
+                <option value="EEE">EEE (Electrical & Electronics)</option>
+                <option value="MECH">MECH (Mechanical)</option>
+                <option value="CIVIL">CIVIL (Civil Engg)</option>
+                <option value="AIDS">AIDS (AI & Data Science)</option>
+                <option value="CHEM">CHEM (Chemical)</option>
+              </select>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <label class="text-xs font-bold text-slate-600">Semester:</label>
+              <select id="selOverviewSem" onchange="loadOverview()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white text-slate-800 focus:ring-2 focus:ring-indigo-500 shadow-xs">
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3" selected>Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="h-84 sm:h-96">
+          <canvas id="chartCourses"></canvas>
+        </div>
+      </div>
+
+      <!-- Charts Row 2: Department Summary & Grade Distribution -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Department Bar Chart -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm lg:col-span-2">
+          <div class="mb-4">
+            <h3 class="text-lg font-bold text-slate-900 font-heading">Department Performance & Pass Rates</h3>
+            <p class="text-xs text-slate-500">Compares overall pass percentage and average SGPA across engineering disciplines</p>
+          </div>
+          <div class="h-68">
+            <canvas id="chartDept"></canvas>
+          </div>
+        </div>
+
+        <!-- Grade Distribution Chart -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+          <div class="mb-4">
+            <h3 class="text-lg font-bold text-slate-900 font-heading">10-Point Grade Distribution</h3>
+            <p class="text-xs text-slate-500">Breakdown of awarded grades under KEC R2024</p>
+          </div>
+          <div class="h-68 flex items-center justify-center">
+            <canvas id="chartGrades"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ========================================================================= -->
+    <!-- TAB 3: PHASED MARKS ENTRY & ATTENDANCE ("THEN & NOW")                     -->
+    <!-- ========================================================================= -->
+    <section id="view-marksentry" class="tab-view hidden space-y-6">
+      
+      <!-- TOP UNIFIED FILTER & CONTROL TOOLBAR (Full Width) -->
+      <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold shadow-xs">
+              <i class="fa-solid fa-pen-nib"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-black text-slate-900 font-heading">Continuous Evaluation & Attendance Portal</h3>
+              <p class="text-xs text-slate-500 font-medium">Record phased marks & subject attendance under Kongu Engineering College Regulation 2024</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 bg-amber-400 text-slate-950 rounded-full font-black text-xs uppercase shadow-xs">
+              R2024 Phased Entry
+            </span>
+          </div>
+        </div>
+
+        <!-- Filter Controls Row: Semester Filter, Department Filter, Course Type Filter & Search -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-slate-100">
+          
+          <!-- Semester Filter -->
+          <div>
+            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1 flex items-center space-x-1">
+              <i class="fa-solid fa-calendar text-indigo-500"></i>
+              <span>Semester Filter *</span>
+            </label>
+            <select id="entryFilterSem" onchange="applyEntryFilters()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold bg-slate-50 text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="ALL">All Semesters</option>
+              <option value="1">Semester 1</option>
+              <option value="2">Semester 2</option>
+              <option value="3" selected>Semester 3</option>
+              <option value="4">Semester 4</option>
+              <option value="5">Semester 5</option>
+              <option value="6">Semester 6</option>
+              <option value="7">Semester 7</option>
+              <option value="8">Semester 8</option>
+            </select>
+          </div>
+
+          <!-- Department Filter -->
+          <div>
+            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1 flex items-center space-x-1">
+              <i class="fa-solid fa-building-columns text-indigo-500"></i>
+              <span>Department Filter *</span>
+            </label>
+            <select id="entryFilterDept" onchange="applyEntryFilters()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold bg-slate-50 text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="ALL" selected>All Departments</option>
+              <option value="IT">Information Technology (IT)</option>
+              <option value="CSE">Computer Science (CSE)</option>
+              <option value="ECE">Electronics & Communication (ECE)</option>
+              <option value="EEE">Electrical & Electronics (EEE)</option>
+              <option value="MECH">Mechanical Engineering (MECH)</option>
+              <option value="CIVIL">Civil Engineering (CIVIL)</option>
+              <option value="AIDS">AI & Data Science (AIDS)</option>
+              <option value="CHEM">Chemical Engineering (CHEM)</option>
+            </select>
+          </div>
+
+          <!-- Course Type Filter -->
+          <div>
+            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1 flex items-center space-x-1">
+              <i class="fa-solid fa-filter text-indigo-500"></i>
+              <span>Course Type Filter</span>
+            </label>
+            <select id="entryFilterType" onchange="applyEntryFilters()" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold bg-slate-50 text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="ALL" selected>All Course Types</option>
+              <option value="THEORY">THEORY (40 CIA / 60 ESE)</option>
+              <option value="PRACTICAL">PRACTICAL (60 CIA / 40 ESE)</option>
+              <option value="EMBEDDED">EMBEDDED (50 CIA / 50 ESE)</option>
+            </select>
+          </div>
+
+          <!-- Search Filter -->
+          <div>
+            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1 flex items-center space-x-1">
+              <i class="fa-solid fa-magnifying-glass text-indigo-500"></i>
+              <span>Quick Search</span>
+            </label>
+            <div class="relative">
+              <input type="text" id="entrySearchText" oninput="applyEntryFilters()" placeholder="Roll, student, course..." class="w-full border border-slate-300 rounded-xl pl-8 pr-3 py-2 text-xs font-medium bg-slate-50 text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <i class="fa-solid fa-search absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- MAIN 12-COLUMN RESPONSIVE LAYOUT (MAKING FULL USE OF FREE SPACES) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- ==================== LEFT COLUMN: CANDIDATES & COURSES NAVIGATOR (4 COLS) ==================== -->
+        <div class="lg:col-span-4 space-y-5">
+          
+          <!-- 1. Student Candidates Panel -->
+          <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center space-x-2">
+                <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold">
+                  <i class="fa-solid fa-users"></i>
+                </span>
+                <span class="text-xs font-black uppercase tracking-wider text-slate-800">Candidates</span>
+              </div>
+              <span id="badgeCandidateCount" class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-800">
+                0 Students
+              </span>
+            </div>
+            
+            <!-- Quick Candidates List (Scrollable) -->
+            <div id="listCandidates" class="max-h-56 overflow-y-auto space-y-1.5 pr-1 text-xs">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+          <!-- 2. Filtered Courses Panel -->
+          <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center space-x-2">
+                <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold">
+                  <i class="fa-solid fa-book-open"></i>
+                </span>
+                <span class="text-xs font-black uppercase tracking-wider text-slate-800">Available Courses</span>
+              </div>
+              <span id="badgeCourseCount" class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-800">
+                0 Courses
+              </span>
+            </div>
+
+            <!-- Quick Courses List (Scrollable) -->
+            <div id="listCourses" class="max-h-56 overflow-y-auto space-y-1.5 pr-1 text-xs">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+
+          <!-- 3. Active KEC R2024 Rule Card -->
+          <div id="cardActiveCourseRule" class="bg-gradient-to-br from-indigo-50 to-slate-50 p-5 rounded-3xl border border-indigo-200/80 shadow-xs space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-black uppercase tracking-wider text-indigo-900 flex items-center space-x-1.5">
+                <i class="fa-solid fa-scale-balanced text-indigo-600"></i>
+                <span id="txtRuleTitle">Course Evaluation Rule</span>
+              </span>
+              <span id="badgeRuleType" class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-indigo-600 text-white">
+                THEORY
+              </span>
+            </div>
+            <p id="txtRuleDesc" class="text-xs text-slate-600 font-medium leading-relaxed">
+              CIA Weightage: 40% (CIA1 35% + CIA2 35% + Asg 30%) • ESE Weightage: 60% (Min 27/60 threshold) • Pass Minimum: 50 Marks.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- ==================== RIGHT COLUMN: MARKS & ATTENDANCE FORM (8 COLS) ==================== -->
+        <div class="lg:col-span-8 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+          
+          <!-- Active Selection Banner -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap justify-between items-center gap-3">
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Selected Candidate & Subject</div>
+              <div class="text-base font-black text-slate-900 font-heading flex items-center space-x-2 mt-0.5">
+                <span id="activeStudentLabel">Loading Candidate...</span>
+                <span class="text-slate-300">/</span>
+                <span id="activeCourseLabel" class="text-indigo-600">Select Course</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span id="activeCourseTypePill" class="px-2.5 py-1 rounded-lg text-xs font-black bg-blue-100 text-blue-800">THEORY</span>
+              <span id="activeCreditsPill" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200 text-slate-800">3 Credits</span>
+            </div>
+          </div>
+
+          <form id="formMarks" onsubmit="submitMarks(event)" class="space-y-5">
+            
+            <!-- Candidate and Course Select Dropdowns (Syncs with Navigator) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-bold text-slate-600 block mb-1 uppercase tracking-wider">Candidate Student *</label>
+                <select id="entryRoll" required onchange="onEntryStudentChange()" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm bg-slate-50 font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <!-- Populated via JS -->
+                </select>
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-600 block mb-1 uppercase tracking-wider">Enrolled Course *</label>
+                <select id="entryCourse" required onchange="onEntryCourseChange()" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm bg-slate-50 font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <!-- Populated via JS -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Subject Attendance Tracking (Held vs Attended) -->
+            <div class="p-4.5 rounded-2xl border border-amber-200 bg-amber-50/60 space-y-3">
+              <div class="flex flex-wrap justify-between items-center gap-2">
+                <div class="text-xs font-black uppercase tracking-wider text-amber-900 flex items-center space-x-2">
+                  <span class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs shadow-xs">
+                    <i class="fa-solid fa-clipboard-user text-[11px]"></i>
+                  </span>
+                  <span>Subject Attendance Record (Classes Held vs Attended)</span>
+                </div>
+                <!-- Live Attendance Percentage & KEC Eligibility Pill -->
+                <div id="entryAttBadge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  <i class="fa-solid fa-circle-check text-[10px] mr-1.5"></i>
+                  <span id="entryAttText">100.0% • Eligible for ESE</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-xs font-semibold text-slate-700 block mb-1">Total Classes Held in Subject</label>
+                  <input type="number" min="1" max="150" id="entryTotalClasses" value="60" oninput="updateAttendancePreview()" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm bg-white font-bold text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="text-xs font-semibold text-slate-700 block mb-1">Classes Attended by Student</label>
+                  <input type="number" min="0" max="150" id="entryAttendedClasses" value="55" oninput="updateAttendancePreview()" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm bg-white font-bold text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                </div>
+              </div>
+
+              <div class="flex items-center space-x-2.5 pt-0.5">
+                <input type="checkbox" id="entryIsCondoned" onchange="updateAttendancePreview()" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                <label for="entryIsCondoned" class="text-xs font-bold text-slate-700 cursor-pointer">
+                  Approved Medical Condonation (For 65% – 74.9% attendance bracket)
+                </label>
+              </div>
+            </div>
+
+            <!-- Phase 1: Mid-Semester -->
+            <div class="p-4.5 rounded-2xl border border-blue-200 bg-blue-50/50 space-y-3">
+              <div class="text-xs font-black uppercase tracking-wider text-blue-900 flex items-center space-x-2">
+                <span class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs">1</span>
+                <span>Phase 1 (Mid-Semester) - Continuous Assessment Tests (0 - 100)</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-xs font-semibold text-slate-700 block mb-1">CIA Test 1 (out of 100)</label>
+                  <input type="number" step="0.5" min="0" max="100" id="entryCia1" placeholder="e.g. 88.0" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm bg-white font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="text-xs font-semibold text-slate-700 block mb-1">CIA Test 2 (out of 100)</label>
+                  <input type="number" step="0.5" min="0" max="100" id="entryCia2" placeholder="e.g. 92.0" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm bg-white font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 2: End-of-Semester CIA -->
+            <div class="p-4.5 rounded-2xl border border-indigo-200 bg-indigo-50/50 space-y-3">
+              <div class="text-xs font-black uppercase tracking-wider text-indigo-900 flex items-center space-x-2">
+                <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs">2</span>
+                <span>Phase 2 (End of Semester) - Assignments / Quizzes / Lab Evaluations (0 - 100)</span>
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-slate-700 block mb-1">Assignment / Quiz / Lab Score (out of 100)</label>
+                <input type="number" step="0.5" min="0" max="100" id="entryAsg" placeholder="e.g. 94.0" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm bg-white font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              </div>
+            </div>
+
+            <!-- Phase 3: Post-Semester (ESE) -->
+            <div class="p-4.5 rounded-2xl border border-emerald-200 bg-emerald-50/50 space-y-3">
+              <div class="text-xs font-black uppercase tracking-wider text-emerald-900 flex items-center space-x-2">
+                <span class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs">3</span>
+                <span>Phase 3 (Post Semester) - End Semester Examination (ESE) (0 - 100)</span>
+              </div>
+              <div class="space-y-3">
+                <div class="flex items-center space-x-2.5">
+                  <input type="checkbox" id="entryIsAbsent" onchange="toggleAbsentInput(this.checked)" class="w-4 h-4 text-rose-600 rounded border-slate-300 focus:ring-rose-500">
+                  <label for="entryIsAbsent" class="text-xs font-bold text-rose-700 cursor-pointer">Mark Candidate as ABSENT (AB) in ESE Exam</label>
+                </div>
+                <div>
+                  <label class="text-xs font-semibold text-slate-700 block mb-1">End Semester Exam Marks (out of 100)</label>
+                  <input type="number" step="0.5" min="0" max="100" id="entryEse" placeholder="e.g. 90.0" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm bg-white font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end space-x-3 pt-2">
+              <button type="button" onclick="resetMarksForm()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs sm:text-sm font-bold transition">Clear Form</button>
+              <button type="submit" class="px-7 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-indigo-200 transition flex items-center space-x-2">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>Save Attendance & Marks</span>
+              </button>
+            </div>
+          </form>
+
+        </div>
+
+        <!-- ==================== FULL WIDTH BOTTOM: ALL ENROLLED SUBJECTS MATRIX (12 COLS) ==================== -->
+        <div class="lg:col-span-12 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex flex-wrap justify-between items-center gap-3">
+            <div>
+              <h4 class="text-base font-black text-slate-900 font-heading flex items-center space-x-2">
+                <i class="fa-solid fa-layer-group text-indigo-600"></i>
+                <span id="txtStudentSubjectsHeading">All Enrolled Subjects Attendance & Marks Overview</span>
+              </h4>
+              <p class="text-xs text-slate-500">Continuous subject attendance and evaluation record. Click "Edit in Form" on any course to load it into the editor above.</p>
+            </div>
+            <div id="studentOverallAttPill" class="px-4 py-1.5 bg-indigo-50 text-indigo-800 rounded-full text-xs font-bold border border-indigo-200 shadow-xs">
+              Aggregate Attendance: --%
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
+            <table class="min-w-full text-xs divide-y divide-slate-200">
+              <thead class="bg-slate-900 text-white font-bold text-center">
+                <tr>
+                  <th class="py-3 px-3 text-left whitespace-nowrap">Course Code</th>
+                  <th class="py-3 px-4 text-left min-w-[150px]">Course Title</th>
+                  <th class="py-3 px-2 text-center whitespace-nowrap">Type</th>
+                  <th class="py-3 px-2 text-center whitespace-nowrap">Credits</th>
+                  <th class="py-3 px-3 text-center whitespace-nowrap">Attended / Held</th>
+                  <th class="py-3 px-3 text-center whitespace-nowrap">Attendance %</th>
+                  <th class="py-3 px-3 text-center whitespace-nowrap">Eligibility</th>
+                  <th class="py-3 px-2 text-center whitespace-nowrap">CIA 1</th>
+                  <th class="py-3 px-2 text-center whitespace-nowrap">CIA 2</th>
+                  <th class="py-3 px-2 text-center whitespace-nowrap">Asg/Lab</th>
+                  <th class="py-3 px-3 text-center whitespace-nowrap">ESE</th>
+                  <th class="py-3 px-3 text-center whitespace-nowrap">Total</th>
+                  <th class="py-3 px-2 text-center whitespace-nowrap">Grade</th>
+                  <th class="py-3 px-3 text-center whitespace-nowrap">Action</th>
+                </tr>
+              </thead>
+              <tbody id="tblStudentSubjectsBody" class="divide-y divide-slate-100 bg-white font-medium text-slate-700">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 4: ATTENDANCE DEFAULTERS & CONDONATION (ALIGNED, NO WRAPPING BUGS)     -->
+    <!-- ========================================================================= -->
+    <section id="view-defaulters" class="tab-view hidden space-y-6">
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        
+        <div class="px-6 py-5 border-b border-slate-100 flex flex-wrap justify-between items-center gap-3 bg-slate-50/60">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-lg font-bold">
+              <i class="fa-solid fa-user-clock"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-black text-slate-900 font-heading">Attendance Defaulter & Condonation Portal</h3>
+              <p class="text-xs text-slate-500">Students with attendance deficits (&lt;75%) under Kongu Engineering College Regulation 2024</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center space-x-1.5">
+              <label class="text-xs font-bold text-slate-600">Department:</label>
+              <select id="selDefaulterDept" onchange="loadDefaulters()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white text-slate-800 focus:ring-2 focus:ring-indigo-500 shadow-xs">
+                <option value="ALL" selected>All Departments</option>
+                <option value="IT">IT (Information Tech)</option>
+                <option value="CSE">CSE (Computer Science)</option>
+                <option value="ECE">ECE (Electronics & Comm)</option>
+                <option value="EEE">EEE (Electrical & Electronics)</option>
+                <option value="MECH">MECH (Mechanical)</option>
+                <option value="CIVIL">CIVIL (Civil)</option>
+                <option value="AIDS">AIDS (AI & Data Science)</option>
+                <option value="CHEM">CHEM (Chemical)</option>
+              </select>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <label class="text-xs font-bold text-slate-600">Semester:</label>
+              <select id="selDefaulterSem" onchange="loadDefaulters()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white text-slate-800 focus:ring-2 focus:ring-indigo-500 shadow-xs">
+                <option value="ALL">All Semesters</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3" selected>Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+            <button onclick="loadDefaulters()" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition shadow-xs" title="Refresh Live Data"><i class="fa-solid fa-rotate-right"></i></button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead class="bg-slate-900 text-white font-bold text-xs uppercase tracking-wider">
+              <tr>
+                <th class="py-3.5 px-6 text-left whitespace-nowrap min-w-[110px]">Roll Number</th>
+                <th class="py-3.5 px-6 text-left whitespace-nowrap min-w-[180px]">Student Name</th>
+                <th class="py-3.5 px-4 text-center whitespace-nowrap min-w-[80px]">Department</th>
+                <th class="py-3.5 px-4 text-center whitespace-nowrap min-w-[90px]">Course</th>
+                <th class="py-3.5 px-6 text-center whitespace-nowrap min-w-[120px]">Attended / Held</th>
+                <th class="py-3.5 px-6 text-center whitespace-nowrap min-w-[100px]">Attendance %</th>
+                <th class="py-3.5 px-6 text-center whitespace-nowrap min-w-[200px]">Eligibility / Status</th>
+                <th class="py-3.5 px-6 text-center whitespace-nowrap min-w-[160px]">Action</th>
+              </tr>
+            </thead>
+            <tbody id="tblDefaultersBody" class="divide-y divide-slate-100 font-medium text-slate-700">
+              <!-- Dynamically populated without wrapping bugs -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 5: MULTI-COURSE ENROLLMENT & CATALOG MATRIX                           -->
+    <!-- ========================================================================= -->
+    <section id="view-management" class="tab-view hidden space-y-6">
+      
+      <!-- Top Action Cards: Add Student, Add Course, and Batch Enroll -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Register Student -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 font-heading mb-3 flex items-center space-x-2">
+              <i class="fa-solid fa-user-plus text-indigo-600"></i>
+              <span>Register New Student</span>
+            </h3>
+            <form id="formNewStudent" onsubmit="submitNewStudent(event)" class="space-y-3">
+              <div>
+                <label class="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Roll Number</label>
+                <input type="text" id="regRoll" required placeholder="e.g. 24ITR050 / 24CSR020" class="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs bg-slate-50 uppercase font-mono font-bold">
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Full Name</label>
+                <input type="text" id="regName" required placeholder="e.g. Koushik R" class="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs bg-slate-50 font-semibold">
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Department</label>
+                  <select id="regDept" class="w-full border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs bg-slate-50 font-bold text-indigo-700">
+                    <option value="IT">IT (Information Tech)</option>
+                    <option value="CSE">CSE (Computer Science)</option>
+                    <option value="ECE">ECE (Electronics & Comm)</option>
+                    <option value="EEE">EEE (Electrical & Electronics)</option>
+                    <option value="MECH">MECH (Mechanical)</option>
+                    <option value="CIVIL">CIVIL (Civil)</option>
+                    <option value="AIDS">AIDS (AI & Data Science)</option>
+                    <option value="CHEM">CHEM (Chemical)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Semester</label>
+                  <select id="regSem" class="w-full border border-slate-300 rounded-xl px-2.5 py-1.5 text-xs bg-slate-50 font-bold text-slate-800">
+                    <option value="1">Sem 1</option>
+                    <option value="2">Sem 2</option>
+                    <option value="3" selected>Sem 3</option>
+                    <option value="4">Sem 4</option>
+                    <option value="5">Sem 5</option>
+                    <option value="6">Sem 6</option>
+                    <option value="7">Sem 7</option>
+                    <option value="8">Sem 8</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-sm transition">
+                Register Candidate
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Add Course to Catalog -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 font-heading mb-3 flex items-center space-x-2">
+              <i class="fa-solid fa-book-bookmark text-sky-600"></i>
+              <span>Add Course to Catalog</span>
+            </h3>
+            <form id="formNewCourse" onsubmit="submitNewCourse(event)" class="space-y-3">
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Course Code</label>
+                  <input type="text" id="courseCode" required placeholder="e.g. 24ITT34" class="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs bg-slate-50 uppercase font-mono font-bold">
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Credits</label>
+                  <input type="number" id="courseCredits" value="3" min="0" max="10" class="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs bg-slate-50 font-bold">
+                </div>
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Course Title</label>
+                <input type="text" id="courseTitle" required placeholder="e.g. Cloud Computing Systems" class="w-full border border-slate-300 rounded-xl px-3 py-1.5 text-xs bg-slate-50 font-semibold">
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Type</label>
+                  <select id="courseType" class="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs bg-slate-50 font-bold">
+                    <option value="THEORY">THEORY (40/60)</option>
+                    <option value="PRACTICAL">PRACTICAL (60/40)</option>
+                    <option value="EMBEDDED">EMBEDDED (50/50)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-600 block uppercase tracking-wider">Semester</label>
+                  <select id="courseSem" class="w-full border border-slate-300 rounded-xl px-2 py-1.5 text-xs bg-slate-50 font-bold text-slate-800">
+                    <option value="1">Sem 1</option>
+                    <option value="2">Sem 2</option>
+                    <option value="3" selected>Sem 3</option>
+                    <option value="4">Sem 4</option>
+                    <option value="5">Sem 5</option>
+                    <option value="6">Sem 6</option>
+                    <option value="7">Sem 7</option>
+                    <option value="8">Sem 8</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="w-full py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs shadow-sm transition">
+                Add Course to Catalog
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Quick Batch Enroll Student in All Semester Courses -->
+        <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-6 rounded-3xl shadow-md flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold font-heading mb-2 flex items-center space-x-2 text-amber-300">
+              <i class="fa-solid fa-users-line"></i>
+              <span>Quick Batch Enrollment</span>
+            </h3>
+            <p class="text-xs text-slate-300 mb-4">Enroll a student into all courses of their semester with 1 click!</p>
+            
+            <div class="space-y-3">
+              <div>
+                <label class="text-[10px] font-bold text-slate-300 block uppercase tracking-wider">Select Student</label>
+                <select id="batchStudent" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-xs bg-white text-slate-900 font-bold focus:ring-2 focus:ring-amber-400 focus:outline-none shadow-xs">
+                  <!-- Populated via JS -->
+                </select>
+              </div>
+
+              <div>
+                <label class="text-[10px] font-bold text-slate-300 block uppercase tracking-wider">Target Semester</label>
+                <select id="batchSem" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-xs bg-white text-slate-900 font-bold focus:ring-2 focus:ring-amber-400 focus:outline-none shadow-xs">
+                  <option value="1">Semester 1 (All Courses)</option>
+                  <option value="2">Semester 2 (All Courses)</option>
+                  <option value="3" selected>Semester 3 (All Courses)</option>
+                  <option value="4">Semester 4 (All Courses)</option>
+                  <option value="5">Semester 5 (All Courses)</option>
+                  <option value="6">Semester 6 (All Courses)</option>
+                  <option value="7">Semester 7 (All Courses)</option>
+                  <option value="8">Semester 8 (All Courses)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="submitBatchEnroll()" class="w-full mt-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs shadow-md transition flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Enroll in All Semester Courses</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Complete Interactive Multi-Course Catalog Matrix -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-slate-900 text-white flex flex-wrap justify-between items-center gap-3">
+          <div>
+            <h4 class="font-bold text-base font-heading">KEC Autonomous Multi-Course Catalog Matrix (Regulation 2024)</h4>
+            <p class="text-xs text-slate-400">Total Courses: <span id="catalogCount">--</span> across All 8 KEC Disciplines (Sem 1 to 8)</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <input type="text" id="searchCourseInput" onkeyup="filterCatalogTable()" placeholder="Search courses or codes..." class="px-3 py-1.5 rounded-xl bg-slate-800 text-white placeholder-slate-400 text-xs border border-white/20 focus:outline-none focus:ring-1 focus:ring-amber-400">
+            <select id="catalogFilterDept" onchange="filterCatalogTable()" class="px-3 py-1.5 rounded-xl bg-slate-800 text-white font-bold text-xs border border-white/20 focus:outline-none">
+              <option value="ALL">All Disciplines</option>
+              <option value="IT">IT (Information Tech)</option>
+              <option value="CSE">CSE (Computer Science)</option>
+              <option value="ECE">ECE (Electronics & Comm)</option>
+              <option value="EEE">EEE (Electrical & Electronics)</option>
+              <option value="MECH">MECH (Mechanical)</option>
+              <option value="CIVIL">CIVIL (Civil Engg)</option>
+              <option value="AIDS">AIDS (AI & Data Science)</option>
+              <option value="CHEM">CHEM (Chemical)</option>
+              <option value="COMMON">Common Foundation (Sem 1-2)</option>
+            </select>
+            <select id="catalogFilterSem" onchange="filterCatalogTable()" class="px-3 py-1.5 rounded-xl bg-slate-800 text-white font-bold text-xs border border-white/20 focus:outline-none">
+              <option value="ALL">All Semesters</option>
+              <option value="1">Semester 1</option>
+              <option value="2">Semester 2</option>
+              <option value="3">Semester 3</option>
+              <option value="4">Semester 4</option>
+              <option value="5">Semester 5</option>
+              <option value="6">Semester 6</option>
+              <option value="7">Semester 7</option>
+              <option value="8">Semester 8</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table id="tblCatalog" class="min-w-full text-xs sm:text-sm divide-y divide-slate-100">
+            <thead class="bg-slate-50 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
+              <tr>
+                <th class="py-3 px-4 text-left">Code</th>
+                <th class="py-3 px-4 text-left">Course Title</th>
+                <th class="py-3 px-3 text-center">Semester</th>
+                <th class="py-3 px-3 text-center">Category / Type</th>
+                <th class="py-3 px-3 text-center">Credits</th>
+                <th class="py-3 px-4 text-left">KEC R2024 Evaluation Scheme</th>
+              </tr>
+            </thead>
+            <tbody id="tblCatalogBody" class="divide-y divide-slate-100 font-medium text-slate-700">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== CLEAN INSTITUTIONAL FOOTER ==================== -->
+  <footer class="bg-white border-t border-slate-200 mt-auto py-5 text-center text-xs text-slate-400 no-print">
+    <div class="font-bold text-slate-600">Kongu Engineering College (Autonomous) • Student Academic & Continuous Evaluation System</div>
+    <div class="mt-1 text-slate-400">Regulation 2024 (R2024) • Java JDBC & MySQL 8.0 • Office of the Controller of Examinations</div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-bold transition-all transform translate-y-24 opacity-0 z-50 flex items-center space-x-2">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toastMsg">Notification</span>
+  </div>
+
+  <script>
+    let chartCoursesInstance = null;
+    let chartDeptInstance = null;
+    let chartGradesInstance = null;
+    let allStudents = [];
+    let allCourses = [];
+    let isCompact = false;
+
+    window.onload = function() {
+      refreshAll();
+    };
+
+    function refreshAll() {
+      loadStudents();
+      loadCourses();
+      loadOverview();
+      loadDefaulters();
+    }
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-tab').forEach(el => {
+        el.className = 'nav-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition text-slate-300 hover:text-white hover:bg-white/10';
+      });
+      document.getElementById('view-' + tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-' + tabId);
+      activeBtn.className = 'nav-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20';
+
+      if (tabId === 'gradesheet') loadGradeSheet();
+      if (tabId === 'defaulters') loadDefaulters();
+      if (tabId === 'overview') loadOverview();
+      if (tabId === 'management') renderCatalog();
+    }
+
+    function showToast(msg, isSuccess = true) {
+      const toast = document.getElementById('toast');
+      const icon = document.getElementById('toastIcon');
+      document.getElementById('toastMsg').innerText = msg;
+      icon.className = isSuccess ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-solid fa-triangle-exclamation text-rose-400';
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 3500);
+    }
+
+    // Scroll grade table left or right
+    function scrollGradeTable(amount) {
+      const el = document.getElementById('gradeTableWrapper');
+      if (el) el.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+
+    // Toggle compact mode to fit all columns without scroll
+    function toggleCompactMode() {
+      isCompact = !isCompact;
+      const table = document.getElementById('tblGradeReport');
+      const btn = document.getElementById('btnCompact');
+      if (isCompact) {
+        table.classList.add('table-compact');
+        btn.innerHTML = '<i class="fa-solid fa-expand"></i><span>Spacious View</span>';
+        btn.className = 'px-3.5 py-1.5 bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition shadow-xs flex items-center space-x-1';
+      } else {
+        table.classList.remove('table-compact');
+        btn.innerHTML = '<i class="fa-solid fa-compress"></i><span>Fit to Screen</span>';
+        btn.className = 'px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-bold transition border border-indigo-200 shadow-xs flex items-center space-x-1';
+      }
+    }
+
+    async function loadStudents() {
+      try {
+        const res = await fetch('/api/students');
+        allStudents = await res.json();
+        applyStudentFilters();
+        
+        // Also populate student options in batch enroll and marks entry
+        const entryRoll = document.getElementById('entryRoll');
+        const batchStudent = document.getElementById('batchStudent');
+        entryRoll.innerHTML = '';
+        batchStudent.innerHTML = '';
+
+        allStudents.forEach(s => {
+          const opt = `<option value="${s.rollNo}" class="text-slate-900 bg-white font-bold">${s.rollNo} - ${s.name} (${s.department}, Sem ${s.semester})</option>`;
+          entryRoll.innerHTML += opt;
+          batchStudent.innerHTML += opt;
+        });
+
+        if (allStudents.length > 0) {
+          applyEntryFilters();
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    // Filter students by selected department and semester
+    function applyStudentFilters() {
+      const selectedDept = document.getElementById('filterDept').value;
+      const selectedSem = document.getElementById('selSemGrade').value;
+      const selGrade = document.getElementById('selStudentGrade');
+      selGrade.innerHTML = '';
+
+      let filtered = allStudents.filter(s => {
+        const deptMatch = (selectedDept === 'ALL') || (s.department === selectedDept);
+        const semMatch = (selectedSem === 'ALL') || (String(s.semester) === String(selectedSem));
+        return deptMatch && semMatch;
+      });
+
+      // If no students match exact semester, fallback to department match
+      if (filtered.length === 0) {
+        filtered = allStudents.filter(s => (selectedDept === 'ALL') || (s.department === selectedDept));
+      }
+
+      if (filtered.length === 0) {
+        selGrade.innerHTML = '<option value="">No candidates found</option>';
+        return;
+      }
+
+      filtered.forEach(s => {
+        selGrade.innerHTML += `<option value="${s.rollNo}" class="text-slate-900 bg-white font-bold">${s.rollNo} - ${s.name} (${s.department}, Sem ${s.semester})</option>`;
+      });
+
+      loadGradeSheet();
+    }
+
+    async function loadCourses() {
+      try {
+        const res = await fetch('/api/courses');
+        allCourses = await res.json();
+        renderCatalog();
+        if (allStudents.length > 0) {
+          applyEntryFilters();
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    let currentEntryStudentReport = null;
+
+    // Filter Candidates and Courses in the Marks Entry Tab
+    function applyEntryFilters() {
+      const semEl = document.getElementById('entryFilterSem');
+      const deptEl = document.getElementById('entryFilterDept');
+      const typeEl = document.getElementById('entryFilterType');
+      const searchEl = document.getElementById('entrySearchText');
+
+      const semVal = semEl ? semEl.value : '3';
+      const deptVal = deptEl ? deptEl.value : 'ALL';
+      const typeVal = typeEl ? typeEl.value : 'ALL';
+      const searchVal = searchEl ? (searchEl.value || '').trim().toLowerCase() : '';
+
+      // 1. Filter Students
+      const filteredStudents = allStudents.filter(s => {
+        const semMatch = (semVal === 'ALL') || (String(s.semester) === String(semVal));
+        const deptMatch = (deptVal === 'ALL') || (s.department === deptVal);
+        const searchMatch = !searchVal || 
+          s.rollNo.toLowerCase().includes(searchVal) || 
+          s.name.toLowerCase().includes(searchVal);
+        return semMatch && deptMatch && searchMatch;
+      });
+
+      // 2. Filter Courses
+      const filteredCourses = allCourses.filter(c => {
+        const semMatch = (semVal === 'ALL') || (String(c.semester) === String(semVal));
+        const typeMatch = (typeVal === 'ALL') || (c.courseType === typeVal);
+        let deptMatch = true;
+        if (deptVal !== 'ALL') {
+          if (c.semester <= 2) {
+            deptMatch = true; // Foundation courses for Sem 1 and 2
+          } else {
+            const codeUpper = c.courseCode.toUpperCase();
+            if (deptVal === 'IT') deptMatch = codeUpper.includes('IT') || codeUpper.includes('MN') || codeUpper.includes('MA') || codeUpper.includes('GE');
+            else if (deptVal === 'CSE') deptMatch = codeUpper.includes('CS') || codeUpper.includes('MA') || codeUpper.includes('GE');
+            else if (deptVal === 'ECE') deptMatch = codeUpper.includes('EC') || codeUpper.includes('MA') || codeUpper.includes('GE');
+            else if (deptVal === 'EEE') deptMatch = codeUpper.includes('EE') || codeUpper.includes('MA') || codeUpper.includes('GE');
+            else if (deptVal === 'MECH') deptMatch = codeUpper.includes('ME') || codeUpper.includes('MA') || codeUpper.includes('GE');
+            else if (deptVal === 'CIVIL') deptMatch = codeUpper.includes('CE') || codeUpper.includes('MA') || codeUpper.includes('GE');
+            else if (deptVal === 'AIDS') deptMatch = codeUpper.includes('AD') || codeUpper.includes('MA') || codeUpper.includes('GE');
+            else if (deptVal === 'CHEM') deptMatch = codeUpper.includes('CH') || codeUpper.includes('MA') || codeUpper.includes('GE');
+          }
+        }
+        const searchMatch = !searchVal || 
+          c.courseCode.toLowerCase().includes(searchVal) || 
+          c.title.toLowerCase().includes(searchVal);
+        return semMatch && typeMatch && deptMatch && searchMatch;
+      });
+
+      // Update count badges
+      const candidateBadge = document.getElementById('badgeCandidateCount');
+      if (candidateBadge) candidateBadge.innerText = `${filteredStudents.length} Students`;
+      const courseBadge = document.getElementById('badgeCourseCount');
+      if (courseBadge) courseBadge.innerText = `${filteredCourses.length} Courses`;
+
+      // Render Left Candidates List & select dropdown
+      const entryRoll = document.getElementById('entryRoll');
+      const listCandidates = document.getElementById('listCandidates');
+      const prevSelectedRoll = entryRoll ? entryRoll.value : '';
+
+      if (entryRoll) entryRoll.innerHTML = '';
+      if (listCandidates) listCandidates.innerHTML = '';
+
+      if (filteredStudents.length === 0) {
+        if (entryRoll) entryRoll.innerHTML = '<option value="">No matching students</option>';
+        if (listCandidates) listCandidates.innerHTML = '<div class="py-4 text-center text-slate-400">No students match filter</div>';
+      } else {
+        filteredStudents.forEach(s => {
+          const isSelected = s.rollNo === prevSelectedRoll;
+          if (entryRoll) {
+            entryRoll.innerHTML += `<option value="${s.rollNo}" ${isSelected ? 'selected' : ''}>${s.rollNo} - ${s.name} (${s.department}, Sem ${s.semester})</option>`;
+          }
+          if (listCandidates) {
+            listCandidates.innerHTML += `
+              <div onclick="selectEntryCandidate('${s.rollNo}')" class="candidate-item p-2.5 rounded-xl border ${isSelected ? 'border-indigo-500 bg-indigo-50/80 shadow-xs' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'} cursor-pointer transition flex items-center justify-between">
+                <div>
+                  <div class="font-bold text-slate-900">${s.name}</div>
+                  <div class="text-[11px] font-mono text-slate-500">${s.rollNo} • Sem ${s.semester}</div>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-white border border-slate-200 text-indigo-700">${s.department}</span>
+              </div>
+            `;
+          }
+        });
+
+        if (entryRoll && !filteredStudents.some(s => s.rollNo === prevSelectedRoll)) {
+          entryRoll.value = filteredStudents[0].rollNo;
+        }
+      }
+
+      // Render Left Courses List & select dropdown
+      const entryCourse = document.getElementById('entryCourse');
+      const listCourses = document.getElementById('listCourses');
+      const prevSelectedCourse = entryCourse ? entryCourse.value : '';
+
+      if (entryCourse) entryCourse.innerHTML = '';
+      if (listCourses) listCourses.innerHTML = '';
+
+      if (filteredCourses.length === 0) {
+        if (entryCourse) entryCourse.innerHTML = '<option value="">No matching courses</option>';
+        if (listCourses) listCourses.innerHTML = '<div class="py-4 text-center text-slate-400">No courses match filter</div>';
+      } else {
+        filteredCourses.forEach(c => {
+          const isSelected = c.courseCode === prevSelectedCourse;
+          let typePill = 'bg-slate-100 text-slate-700';
+          if (c.courseType === 'THEORY') typePill = 'bg-blue-100 text-blue-800';
+          else if (c.courseType === 'PRACTICAL') typePill = 'bg-emerald-100 text-emerald-800';
+          else if (c.courseType === 'EMBEDDED') typePill = 'bg-purple-100 text-purple-800';
+
+          if (entryCourse) {
+            entryCourse.innerHTML += `<option value="${c.courseCode}" ${isSelected ? 'selected' : ''}>${c.courseCode} - ${c.title} [${c.courseType}, ${c.credits} Cr, Sem ${c.semester}]</option>`;
+          }
+          if (listCourses) {
+            listCourses.innerHTML += `
+              <div onclick="selectEntryCourse('${c.courseCode}')" class="course-item p-2.5 rounded-xl border ${isSelected ? 'border-blue-500 bg-blue-50/80 shadow-xs' : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'} cursor-pointer transition flex items-center justify-between">
+                <div>
+                  <div class="font-bold text-slate-900">${c.courseCode}</div>
+                  <div class="text-[11px] text-slate-500 truncate max-w-[150px]">${c.title}</div>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-black ${typePill}">${c.courseType.slice(0, 4)}</span>
+              </div>
+            `;
+          }
+        });
+
+        if (entryCourse && !filteredCourses.some(c => c.courseCode === prevSelectedCourse)) {
+          entryCourse.value = filteredCourses[0].courseCode;
+        }
+      }
+
+      updateActiveSelectionLabels();
+      loadStudentSubjectAttendanceList();
+    }
+
+    // Quick selection of Candidate from Left Panel
+    function selectEntryCandidate(roll) {
+      const select = document.getElementById('entryRoll');
+      if (select) {
+        select.value = roll;
+        onEntryStudentChange();
+        applyEntryFilters();
+      }
+    }
+
+    // Quick selection of Course from Left Panel
+    function selectEntryCourse(courseCode) {
+      const select = document.getElementById('entryCourse');
+      if (select) {
+        select.value = courseCode;
+        onEntryCourseChange();
+        applyEntryFilters();
+      }
+    }
+
+    function updateActiveSelectionLabels() {
+      const roll = document.getElementById('entryRoll') ? document.getElementById('entryRoll').value : '';
+      const courseCode = document.getElementById('entryCourse') ? document.getElementById('entryCourse').value : '';
+
+      const student = allStudents.find(s => s.rollNo === roll);
+      const course = allCourses.find(c => c.courseCode === courseCode);
+
+      const stuLabel = document.getElementById('activeStudentLabel');
+      const crsLabel = document.getElementById('activeCourseLabel');
+      const typePill = document.getElementById('activeCourseTypePill');
+      const credPill = document.getElementById('activeCreditsPill');
+      const ruleType = document.getElementById('badgeRuleType');
+      const ruleDesc = document.getElementById('txtRuleDesc');
+
+      if (student && stuLabel) {
+        stuLabel.innerText = `${student.rollNo} • ${student.name} (${student.department})`;
+      } else if (stuLabel) {
+        stuLabel.innerText = roll || 'No Student Selected';
+      }
+
+      if (course) {
+        if (crsLabel) crsLabel.innerText = `${course.courseCode} - ${course.title}`;
+        if (typePill) {
+          typePill.innerText = course.courseType;
+          if (course.courseType === 'THEORY') typePill.className = 'px-2.5 py-1 rounded-lg text-xs font-black bg-blue-100 text-blue-800';
+          else if (course.courseType === 'PRACTICAL') typePill.className = 'px-2.5 py-1 rounded-lg text-xs font-black bg-emerald-100 text-emerald-800';
+          else if (course.courseType === 'EMBEDDED') typePill.className = 'px-2.5 py-1 rounded-lg text-xs font-black bg-purple-100 text-purple-800';
+        }
+        if (credPill) credPill.innerText = `${course.credits} Credits`;
+        if (ruleType) ruleType.innerText = course.courseType;
+        if (ruleDesc) {
+          if (course.courseType === 'THEORY') {
+            ruleDesc.innerHTML = 'CIA Weightage: <strong>40%</strong> (CIA1 35% + CIA2 35% + Asg 30%) • ESE Weightage: <strong>60%</strong> (Min <strong>27/60</strong> threshold) • Pass Minimum: <strong>50 Marks</strong>.';
+          } else if (course.courseType === 'PRACTICAL') {
+            ruleDesc.innerHTML = 'CIA Weightage: <strong>60%</strong> (Continuous Lab Evaluation) • ESE Weightage: <strong>40%</strong> (Min <strong>20/40</strong> threshold) • Pass Minimum: <strong>50 Marks</strong>.';
+          } else if (course.courseType === 'EMBEDDED') {
+            ruleDesc.innerHTML = 'CIA Weightage: <strong>50%</strong> (Theory + Lab Experiments) • ESE Weightage: <strong>50%</strong> (Min <strong>22.5/50</strong> threshold) • Pass Minimum: <strong>50 Marks</strong>.';
+          }
+        }
+      }
+    }
+
+    async function onEntryStudentChange() {
+      updateActiveSelectionLabels();
+      await loadStudentSubjectAttendanceList();
+    }
+
+    async function onEntryCourseChange() {
+      updateActiveSelectionLabels();
+      loadExistingSubjectData();
+    }
+
+    // Load full subject attendance list and marks for the selected student
+    async function loadStudentSubjectAttendanceList() {
+      const roll = document.getElementById('entryRoll') ? document.getElementById('entryRoll').value : '';
+      const tbody = document.getElementById('tblStudentSubjectsBody');
+      const heading = document.getElementById('txtStudentSubjectsHeading');
+      const overallPill = document.getElementById('studentOverallAttPill');
+      if (!roll || !tbody) return;
+
+      tbody.innerHTML = '<tr><td colspan="14" class="py-6 text-center text-slate-400">Loading enrolled subjects...</td></tr>';
+
+      try {
+        const semVal = document.getElementById('entryFilterSem') ? document.getElementById('entryFilterSem').value : '3';
+        let semQuery = semVal;
+        if (semQuery === 'ALL') {
+          const student = allStudents.find(s => s.rollNo === roll);
+          semQuery = student ? student.semester : 3;
+        }
+        const res = await fetch(`/api/report?rollNo=${roll}&sem=${semQuery}`);
+        if (!res.ok) {
+          tbody.innerHTML = '<tr><td colspan="14" class="py-6 text-center text-slate-400">No enrolled subjects found for this student.</td></tr>';
+          currentEntryStudentReport = null;
+          loadExistingSubjectData();
+          return;
+        }
+
+        const data = await res.json();
+        currentEntryStudentReport = data;
+
+        if (heading) {
+          heading.innerText = `All Enrolled Subjects Attendance & Marks Overview for ${data.name} (${data.rollNo})`;
+        }
+
+        let totalHeld = 0;
+        let totalAtt = 0;
+        tbody.innerHTML = '';
+
+        if (!data.courses || data.courses.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="14" class="py-6 text-center text-slate-400">No courses enrolled yet. Select a course above to record attendance and marks.</td></tr>';
+          if (overallPill) overallPill.innerHTML = 'Aggregate Attendance: <strong>0.0%</strong>';
+          loadExistingSubjectData();
+          return;
+        }
+
+        data.courses.forEach(c => {
+          totalHeld += (c.totalClasses || 0);
+          totalAtt += (c.attendedClasses || 0);
+          const pct = c.attendancePct != null ? Number(c.attendancePct) : 0;
+
+          let statusBadge = '';
+          if (pct < 65) {
+            statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800 border border-rose-200 whitespace-nowrap"><i class="fa-solid fa-ban mr-1"></i>BARRED (SA)</span>';
+          } else if (pct < 75) {
+            if (c.isCondoned) {
+              statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200 whitespace-nowrap"><i class="fa-solid fa-check mr-1"></i>CONDONED</span>';
+            } else {
+              statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 whitespace-nowrap"><i class="fa-solid fa-clock mr-1"></i>CONDONATION REQ.</span>';
+            }
+          } else {
+            statusBadge = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap"><i class="fa-solid fa-circle-check mr-1"></i>ELIGIBLE</span>';
+          }
+
+          let typePill = 'bg-slate-100 text-slate-700';
+          if (c.courseType === 'THEORY') typePill = 'bg-blue-100 text-blue-800';
+          else if (c.courseType === 'PRACTICAL') typePill = 'bg-emerald-100 text-emerald-800';
+          else if (c.courseType === 'EMBEDDED') typePill = 'bg-purple-100 text-purple-800';
+
+          const markDisplay = c.totalMarks != null ? Number(c.totalMarks).toFixed(1) : '<span class="text-slate-400">Pending</span>';
+          const gradeDisplay = c.grade ? `<span class="font-black px-2 py-0.5 rounded-md text-xs ${c.grade === 'RA' || c.grade === 'SA' || c.grade === 'AB' ? 'bg-rose-100 text-rose-700' : 'bg-indigo-100 text-indigo-700'}">${c.grade}</span>` : '<span class="text-slate-400">--</span>';
+
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+              <td class="py-2.5 px-3 font-mono font-bold text-slate-900 whitespace-nowrap">${c.courseCode}</td>
+              <td class="py-2.5 px-4 font-bold text-slate-800">${c.courseTitle}</td>
+              <td class="py-2.5 px-2 text-center whitespace-nowrap"><span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${typePill}">${c.courseType}</span></td>
+              <td class="py-2.5 px-2 text-center font-bold text-slate-600">${c.credits || 0}</td>
+              <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-800 whitespace-nowrap">${c.attendedClasses} / ${c.totalClasses}</td>
+              <td class="py-2.5 px-3 text-center font-mono font-black ${pct < 65 ? 'text-rose-600' : pct < 75 ? 'text-amber-600' : 'text-emerald-600'} whitespace-nowrap">${pct.toFixed(1)}%</td>
+              <td class="py-2.5 px-3 text-center whitespace-nowrap">${statusBadge}</td>
+              <td class="py-2.5 px-2 text-center font-mono font-medium">${c.cia1 != null ? Number(c.cia1).toFixed(0) : '--'}</td>
+              <td class="py-2.5 px-2 text-center font-mono font-medium">${c.cia2 != null ? Number(c.cia2).toFixed(0) : '--'}</td>
+              <td class="py-2.5 px-2 text-center font-mono font-medium">${c.assignment != null ? Number(c.assignment).toFixed(0) : '--'}</td>
+              <td class="py-2.5 px-3 text-center font-mono font-medium">${c.isAbsent ? '<span class="text-rose-600 font-bold">AB</span>' : (c.ese != null ? Number(c.ese).toFixed(0) : '--')}</td>
+              <td class="py-2.5 px-3 text-center font-mono font-black text-slate-900 whitespace-nowrap">${markDisplay}</td>
+              <td class="py-2.5 px-2 text-center whitespace-nowrap">${gradeDisplay}</td>
+              <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                <button type="button" onclick="selectSubjectForEditing('${c.courseCode}')" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-lg text-xs border border-indigo-200 transition shadow-xs flex items-center space-x-1 mx-auto">
+                  <i class="fa-solid fa-pen-to-square text-[10px]"></i>
+                  <span>Edit in Form</span>
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+        if (overallPill) {
+          const overallPct = totalHeld > 0 ? (totalAtt * 100 / totalHeld).toFixed(1) : '0.0';
+          overallPill.innerHTML = `Aggregate Attendance: <strong class="text-indigo-900 font-mono">${overallPct}%</strong> (${totalAtt}/${totalHeld} hrs)`;
+        }
+
+        loadExistingSubjectData();
+      } catch (err) {
+        console.error(err);
+        tbody.innerHTML = '<tr><td colspan="14" class="py-6 text-center text-rose-500 font-bold">Failed to load subject records.</td></tr>';
+      }
+    }
+
+    // Set form course to the clicked subject
+    function selectSubjectForEditing(courseCode) {
+      const select = document.getElementById('entryCourse');
+      if (select) {
+        select.value = courseCode;
+        onEntryCourseChange();
+        const formEl = document.getElementById('formMarks');
+        if (formEl) formEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showToast('Loaded ' + courseCode + ' into editor');
+      }
+    }
+
+    // Load existing attendance & marks for the currently selected student + course
+    function loadExistingSubjectData() {
+      const courseCode = document.getElementById('entryCourse') ? document.getElementById('entryCourse').value : '';
+      updateActiveSelectionLabels();
+
+      if (!currentEntryStudentReport || !currentEntryStudentReport.courses) {
+        document.getElementById('entryTotalClasses').value = 60;
+        document.getElementById('entryAttendedClasses').value = 55;
+        document.getElementById('entryIsCondoned').checked = false;
+        document.getElementById('entryCia1').value = '';
+        document.getElementById('entryCia2').value = '';
+        document.getElementById('entryAsg').value = '';
+        document.getElementById('entryEse').value = '';
+        document.getElementById('entryIsAbsent').checked = false;
+        toggleAbsentInput(false);
+        updateAttendancePreview();
+        return;
+      }
+
+      const c = currentEntryStudentReport.courses.find(item => item.courseCode === courseCode);
+      if (c) {
+        document.getElementById('entryTotalClasses').value = c.totalClasses != null ? c.totalClasses : 60;
+        document.getElementById('entryAttendedClasses').value = c.attendedClasses != null ? c.attendedClasses : 55;
+        document.getElementById('entryIsCondoned').checked = !!c.isCondoned;
+        document.getElementById('entryCia1').value = c.cia1 != null ? c.cia1 : '';
+        document.getElementById('entryCia2').value = c.cia2 != null ? c.cia2 : '';
+        document.getElementById('entryAsg').value = c.assignment != null ? c.assignment : '';
+        document.getElementById('entryEse').value = c.ese != null ? c.ese : '';
+        document.getElementById('entryIsAbsent').checked = !!c.isAbsent;
+        toggleAbsentInput(!!c.isAbsent);
+      } else {
+        document.getElementById('entryTotalClasses').value = 60;
+        document.getElementById('entryAttendedClasses').value = 54;
+        document.getElementById('entryIsCondoned').checked = false;
+        document.getElementById('entryCia1').value = '';
+        document.getElementById('entryCia2').value = '';
+        document.getElementById('entryAsg').value = '';
+        document.getElementById('entryEse').value = '';
+        document.getElementById('entryIsAbsent').checked = false;
+        toggleAbsentInput(false);
+      }
+      updateAttendancePreview();
+    }
+
+    // Live Attendance Calculator & KEC Eligibility Preview
+    function updateAttendancePreview() {
+      const held = parseFloat(document.getElementById('entryTotalClasses').value) || 0;
+      const att = parseFloat(document.getElementById('entryAttendedClasses').value) || 0;
+      const isCond = document.getElementById('entryIsCondoned').checked;
+      const badge = document.getElementById('entryAttBadge');
+      const text = document.getElementById('entryAttText');
+
+      if (!badge || !text) return;
+
+      if (held <= 0) {
+        badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200';
+        text.innerText = '--% • Enter valid classes';
+        return;
+      }
+
+      const pct = Math.min(100, Math.max(0, (att / held) * 100));
+
+      if (pct >= 75.0) {
+        badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200';
+        text.innerHTML = `<i class="fa-solid fa-circle-check text-[10px] mr-1.5"></i>${pct.toFixed(1)}% • Eligible for ESE`;
+      } else if (pct >= 65.0) {
+        if (isCond) {
+          badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-800 border border-blue-200';
+          text.innerHTML = `<i class="fa-solid fa-file-medical text-[10px] mr-1.5"></i>${pct.toFixed(1)}% • Condoned (Eligible)`;
+        } else {
+          badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-200';
+          text.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-[10px] mr-1.5"></i>${pct.toFixed(1)}% • Requires Condonation`;
+        }
+      } else {
+        badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-800 border border-rose-200';
+        text.innerHTML = `<i class="fa-solid fa-ban text-[10px] mr-1.5"></i>${pct.toFixed(1)}% • Barred (Grade SA)`;
+      }
+    }
+
+    // Render Multi-Course Catalog Table
+    function renderCatalog() {
+      const tbody = document.getElementById('tblCatalogBody');
+      const countEl = document.getElementById('catalogCount');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      allCourses.forEach(c => {
+        let typePill = 'bg-slate-100 text-slate-700 border border-slate-200';
+        let rule = 'Standard Evaluation';
+        if (c.courseType === 'THEORY') {
+          typePill = 'bg-blue-50 text-blue-700 border border-blue-200';
+          rule = 'CIA: 40% | ESE: 60% (Min 27/60) | Pass: 50';
+        } else if (c.courseType === 'PRACTICAL') {
+          typePill = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+          rule = 'CIA: 60% | ESE: 40% (Min 20/40) | Pass: 50';
+        } else if (c.courseType === 'EMBEDDED') {
+          typePill = 'bg-purple-50 text-purple-700 border border-purple-200';
+          rule = 'CIA: 50% | ESE: 50% (Min 22.5/50) | Pass: 50';
+        }
+        if (c.credits === 0) rule = 'Non-Credit Mandatory Course (Pass requirement)';
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100 catalog-row" data-code="${c.courseCode}" data-title="${c.title}" data-sem="${c.semester}">
+            <td class="py-2.5 px-4 font-mono font-bold text-indigo-700">${c.courseCode}</td>
+            <td class="py-2.5 px-4 font-bold text-slate-900">${c.title}</td>
+            <td class="py-2.5 px-3 text-center font-bold text-slate-700">Sem ${c.semester}</td>
+            <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${typePill}">${c.courseType}</span></td>
+            <td class="py-2.5 px-3 text-center font-bold">${c.credits}</td>
+            <td class="py-2.5 px-4 text-slate-500 text-xs">${rule}</td>
+          </tr>
+        `;
+      });
+      filterCatalogTable();
+    }
+
+    function filterCatalogTable() {
+      const q = (document.getElementById('searchCourseInput').value || '').toLowerCase().trim();
+      const dept = document.getElementById('catalogFilterDept') ? document.getElementById('catalogFilterDept').value : 'ALL';
+      const sem = document.getElementById('catalogFilterSem') ? document.getElementById('catalogFilterSem').value : 'ALL';
+      const rows = document.querySelectorAll('.catalog-row');
+
+      let visible = 0;
+      rows.forEach(r => {
+        const code = (r.getAttribute('data-code') || '').toLowerCase();
+        const title = (r.getAttribute('data-title') || '').toLowerCase();
+        const rowSem = r.getAttribute('data-sem');
+
+        const matchText = !q || code.includes(q) || title.includes(q);
+        const matchSem = (sem === 'ALL') || (rowSem === sem);
+
+        let matchDept = true;
+        if (dept !== 'ALL') {
+          const codeUpper = code.toUpperCase();
+          if (dept === 'IT') matchDept = codeUpper.includes('IT') || codeUpper.includes('MN');
+          else if (dept === 'CSE') matchDept = codeUpper.includes('CS');
+          else if (dept === 'ECE') matchDept = codeUpper.includes('EC');
+          else if (dept === 'EEE') matchDept = codeUpper.includes('EE');
+          else if (dept === 'MECH') matchDept = codeUpper.includes('ME');
+          else if (dept === 'CIVIL') matchDept = codeUpper.includes('CE');
+          else if (dept === 'AIDS') matchDept = codeUpper.includes('AD');
+          else if (dept === 'CHEM') matchDept = codeUpper.includes('CH');
+          else if (dept === 'COMMON') matchDept = codeUpper.includes('EG') || codeUpper.includes('MA') || codeUpper.includes('PH') || codeUpper.includes('CY') || codeUpper.includes('GE');
+        }
+
+        if (matchText && matchDept && matchSem) {
+          r.style.display = '';
+          visible++;
+        } else {
+          r.style.display = 'none';
+        }
+      });
+
+      const countEl = document.getElementById('catalogCount');
+      if (countEl) countEl.innerText = `${visible} of ${allCourses.length}`;
+    }
+
+    // Load Student Grade Sheet with 14 Columns
+    async function loadGradeSheet() {
+      const rollNo = document.getElementById('selStudentGrade').value;
+      let sem = document.getElementById('selSemGrade').value;
+      if (!rollNo) return;
+      if (sem === 'ALL') {
+        const student = allStudents.find(s => s.rollNo === rollNo);
+        sem = student ? student.semester : 3;
+      }
+
+      try {
+        const res = await fetch(`/api/report?rollNo=${rollNo}&sem=${sem}`);
+        if (!res.ok) {
+          showToast('No record found for ' + rollNo, false);
+          return;
+        }
+        const data = await res.json();
+
+        // Populate Candidate Identity Details
+        document.getElementById('repRoll').innerText = data.rollNo;
+        document.getElementById('repName').innerText = data.name;
+        document.getElementById('repDept').innerText = data.department;
+        document.getElementById('repSemReg').innerText = `Semester ${data.semester} • Regulation 2024`;
+        document.getElementById('sheetDeptHeader').innerText = `DEPARTMENT OF ${data.department} • SEMESTER ${data.semester} GRADE SHEET (REGULATION 2024)`;
+
+        // Avatar Initials
+        const names = data.name.trim().split(' ');
+        let initials = names[0].charAt(0);
+        if (names.length > 1) initials += names[names.length - 1].charAt(0);
+        document.getElementById('studentAvatar').innerText = initials.toUpperCase();
+
+        // Summary KPI Box
+        document.getElementById('repRegCredits').innerText = data.totalEnrolledCredits;
+        document.getElementById('repEarnCredits').innerText = data.totalEarnedCredits;
+        document.getElementById('repWeightedPoints').innerText = 'Grade Points: ' + Number(data.weightedPoints).toFixed(2);
+        document.getElementById('repSgpa').innerText = Number(data.sgpa).toFixed(2);
+        document.getElementById('repPercentage').innerText = Number(data.percentage).toFixed(2) + '%';
+
+        const outcomeBox = document.getElementById('outcomeBox');
+        const outcomeIcon = document.getElementById('outcomeIcon');
+        const outcomeText = document.getElementById('repOutcomeText');
+
+        if (data.allPassed) {
+          outcomeBox.className = 'bg-gradient-to-br from-emerald-50 to-teal-50 p-4 rounded-2xl border border-emerald-200/80 shadow-xs flex items-center space-x-3.5';
+          outcomeIcon.className = 'w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl font-bold shadow-sm shadow-emerald-200';
+          outcomeIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+          outcomeText.className = 'text-lg font-black text-emerald-800 font-heading mt-0.5 leading-tight';
+          outcomeText.innerText = 'PASSED';
+        } else {
+          outcomeBox.className = 'bg-gradient-to-br from-rose-50 to-red-50 p-4 rounded-2xl border border-rose-200/80 shadow-xs flex items-center space-x-3.5';
+          outcomeIcon.className = 'w-12 h-12 rounded-xl bg-rose-600 text-white flex items-center justify-center text-xl font-bold shadow-sm shadow-rose-200';
+          outcomeIcon.innerHTML = '<i class="fa-solid fa-rotate-left"></i>';
+          outcomeText.className = 'text-lg font-black text-rose-700 font-heading mt-0.5 leading-tight';
+          outcomeText.innerText = 'RE-APPEARANCE';
+        }
+
+        // Render Perfectly Aligned 14-Column Table Rows
+        const tbody = document.getElementById('tblReportBody');
+        tbody.innerHTML = '';
+
+        if (!data.courses || data.courses.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="14" class="py-8 text-center text-slate-400 font-semibold">No courses enrolled for ${data.name} in Semester ${sem}.</td></tr>`;
+          return;
+        }
+
+        data.courses.forEach((c, idx) => {
+          const c1 = c.cia1 !== null ? Number(c.cia1).toFixed(1) : '-';
+          const c2 = c.cia2 !== null ? Number(c.cia2).toFixed(1) : '-';
+          const asg = c.assignment !== null ? Number(c.assignment).toFixed(1) : '-';
+          const ese = c.isAbsent ? 'AB' : (c.ese !== null ? Number(c.ese).toFixed(1) : '-');
+          const scEse = (c.ese !== null && !c.isAbsent) ? Number(c.scaledEse).toFixed(2) : '-';
+          const scCia = Number(c.scaledCia).toFixed(2);
+          const total = Number(c.totalMarks).toFixed(2);
+          const attPct = Number(c.attendancePct).toFixed(1);
+
+          // Type Pill Style
+          let typePill = 'bg-slate-100 text-slate-700 border border-slate-200';
+          if (c.courseType === 'THEORY') typePill = 'bg-blue-50 text-blue-700 border border-blue-200';
+          else if (c.courseType === 'PRACTICAL') typePill = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+          else if (c.courseType === 'EMBEDDED') typePill = 'bg-purple-50 text-purple-700 border border-purple-200';
+
+          // Attendance Pill Style
+          let attPill = 'text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200';
+          if (c.attendancePct < 65) attPill = 'text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200';
+          else if (c.attendancePct < 75) attPill = 'text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200';
+
+          // Grade Badge Style (Vibrant, Bold, High Contrast)
+          let gradeBadge = 'bg-slate-200 text-slate-800';
+          if (c.grade === 'O') gradeBadge = 'bg-emerald-600 text-white shadow-xs font-black';
+          else if (c.grade === 'A+') gradeBadge = 'bg-teal-600 text-white shadow-xs font-bold';
+          else if (c.grade === 'A') gradeBadge = 'bg-blue-600 text-white shadow-xs font-bold';
+          else if (c.grade === 'B+') gradeBadge = 'bg-indigo-600 text-white shadow-xs font-bold';
+          else if (c.grade === 'B') gradeBadge = 'bg-sky-600 text-white shadow-xs font-bold';
+          else if (c.grade === 'RA') gradeBadge = 'bg-amber-500 text-white shadow-xs font-extrabold';
+          else if (c.grade === 'SA') gradeBadge = 'bg-rose-600 text-white shadow-xs font-black';
+          else if (c.grade === 'AB') gradeBadge = 'bg-slate-600 text-white shadow-xs font-black';
+
+          // Row Zebra Striping
+          const rowBg = idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50';
+
+          tbody.innerHTML += `
+            <tr class="${rowBg} hover:bg-indigo-50/40 transition border-b border-slate-100">
+              <td class="py-3 px-3 font-mono font-bold text-indigo-900 text-center whitespace-nowrap">${c.courseCode}</td>
+              <td class="py-3 px-4 font-bold text-slate-800 text-left course-title-cell">${c.courseTitle}</td>
+              <td class="py-3 px-2 text-center whitespace-nowrap"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${typePill}">${c.courseType}</span></td>
+              <td class="py-3 px-2 text-center font-bold text-slate-800 whitespace-nowrap">${c.credits}</td>
+              <td class="py-3 px-2 text-center whitespace-nowrap"><span class="${attPill} text-xs font-mono">${attPct}%</span></td>
+              <td class="py-3 px-2 text-center font-mono text-slate-700 whitespace-nowrap">${c1}</td>
+              <td class="py-3 px-2 text-center font-mono text-slate-700 whitespace-nowrap">${c2}</td>
+              <td class="py-3 px-2 text-center font-mono text-slate-700 whitespace-nowrap">${asg}</td>
+              <td class="py-3 px-3 text-center bg-indigo-50/50 font-mono font-bold text-indigo-900 whitespace-nowrap">${scCia}</td>
+              <td class="py-3 px-2 text-center font-mono font-bold ${c.isAbsent ? 'text-rose-600 font-extrabold' : 'text-slate-800'} whitespace-nowrap">${ese}</td>
+              <td class="py-3 px-3 text-center bg-indigo-50/50 font-mono font-bold text-indigo-900 whitespace-nowrap">${scEse}</td>
+              <td class="py-3 px-3 text-center font-mono font-black text-slate-950 bg-indigo-100/70 text-sm whitespace-nowrap">${total}</td>
+              <td class="py-3 px-3 text-center whitespace-nowrap">
+                <span class="inline-block px-2.5 py-1 rounded-lg text-xs ${gradeBadge}">
+                  ${c.grade} <span class="text-[10px] opacity-90">(${c.gradePoint}P)</span>
+                </span>
+              </td>
+              <td class="py-3 px-4 text-left text-xs font-bold whitespace-nowrap ${c.result.includes('PASS') ? 'text-emerald-700' : 'text-rose-600'}">
+                ${c.result}
+              </td>
+            </tr>
+          `;
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    // Load Multi-Course & Department Overview
+    async function loadOverview() {
+      const sem = document.getElementById('selOverviewSem') ? document.getElementById('selOverviewSem').value : 3;
+      const dept = document.getElementById('selOverviewDept') ? document.getElementById('selOverviewDept').value : 'ALL';
+      try {
+        const res = await fetch(`/api/overview?sem=${sem}&dept=${dept}`);
+        const data = await res.json();
+        document.getElementById('cardTotalStudents').innerText = data.totalStudents || 0;
+        document.getElementById('cardTotalCourses').innerText = data.totalCourses || 0;
+        document.getElementById('cardAvgSgpa').innerText = (data.avgSgpa || 0);
+        document.getElementById('cardPassRateSub').innerText = 'Overall Pass Rate: ' + (data.overallPassRate || 0) + '%';
+        document.getElementById('cardDefaulters').innerText = data.defaultersCount || 0;
+
+        // 1. Course Performance Chart
+        const courses = data.courseSummaries || [];
+        const courseLabels = courses.map(c => {
+          const code = c.courseCode || '';
+          let title = c.courseTitle || '';
+          if (title.length > 20) {
+            title = title.substring(0, 18) + '..';
+          }
+          return [code, title];
+        });
+        const coursePass = courses.map(c => parseFloat(c.passRate));
+        const courseAvg = courses.map(c => parseFloat(c.avgScore));
+
+        if (chartCoursesInstance) chartCoursesInstance.destroy();
+        const ctxCourses = document.getElementById('chartCourses').getContext('2d');
+        chartCoursesInstance = new Chart(ctxCourses, {
+          type: 'bar',
+          data: {
+            labels: courseLabels,
+            datasets: [
+              { label: 'Pass Rate (%)', data: coursePass, backgroundColor: '#4f46e5', borderRadius: 8 },
+              { label: 'Avg Marks (/100)', data: courseAvg, backgroundColor: '#0ea5e9', borderRadius: 8 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  title: function(context) {
+                    const idx = context[0].dataIndex;
+                    const c = courses[idx];
+                    return c ? `${c.courseCode} - ${c.courseTitle}` : '';
+                  },
+                  afterTitle: function(context) {
+                    const idx = context[0].dataIndex;
+                    const c = courses[idx];
+                    return c ? `Type: ${c.courseType} (${c.credits} Credits) • Enrolled: ${c.total} (Passed: ${c.passed})` : '';
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                ticks: {
+                  font: {
+                    size: 10,
+                    weight: 'bold'
+                  },
+                  color: '#1e293b',
+                  autoSkip: false,
+                  maxRotation: 0,
+                  minRotation: 0
+                },
+                grid: {
+                  display: false
+                }
+              },
+              y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                  stepSize: 20
+                }
+              }
+            }
+          }
+        });
+
+        // 2. Department Bar Chart
+        const depts = data.departments || [];
+        const deptLabels = depts.map(d => d.dept);
+        const deptPass = depts.map(d => parseFloat(d.passRate));
+        const deptSgpa = depts.map(d => parseFloat(d.avgSgpa));
+
+        if (chartDeptInstance) chartDeptInstance.destroy();
+        const ctxDept = document.getElementById('chartDept').getContext('2d');
+        chartDeptInstance = new Chart(ctxDept, {
+          type: 'bar',
+          data: {
+            labels: deptLabels,
+            datasets: [
+              { label: 'Pass Rate (%)', data: deptPass, backgroundColor: '#6366f1', borderRadius: 8 },
+              { label: 'Avg SGPA (x10)', data: deptSgpa.map(s => s * 10), backgroundColor: '#38bdf8', borderRadius: 8 }
+            ]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 3. Grade Distribution Chart
+        const grades = data.grades || {};
+        const gradeLabels = Object.keys(grades);
+        const gradeCounts = Object.values(grades);
+
+        if (chartGradesInstance) chartGradesInstance.destroy();
+        const ctxGrades = document.getElementById('chartGrades').getContext('2d');
+        chartGradesInstance = new Chart(ctxGrades, {
+          type: 'doughnut',
+          data: {
+            labels: gradeLabels,
+            datasets: [{
+              data: gradeCounts,
+              backgroundColor: ['#10b981', '#0d9488', '#2563eb', '#4f46e5', '#0284c7', '#d97706', '#e11d48', '#475569'],
+              borderWidth: 2,
+              borderColor: '#ffffff'
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    function toggleAbsentInput(isAbsent) {
+      const input = document.getElementById('entryEse');
+      input.disabled = isAbsent;
+      if (isAbsent) input.value = '';
+    }
+
+    // Submit Incremental Marks & Subject Attendance
+    async function submitMarks(e) {
+      e.preventDefault();
+      const rollVal = document.getElementById('entryRoll').value;
+      const courseVal = document.getElementById('entryCourse').value;
+      let targetSem = 3;
+      if (document.getElementById('entryFilterSem') && document.getElementById('entryFilterSem').value !== 'ALL') {
+        targetSem = parseInt(document.getElementById('entryFilterSem').value);
+      } else {
+        const student = allStudents.find(s => s.rollNo === rollVal);
+        const course = allCourses.find(c => c.courseCode === courseVal);
+        targetSem = student ? student.semester : (course ? course.semester : 3);
+      }
+
+      const payload = {
+        rollNo: rollVal,
+        courseCode: courseVal,
+        semester: targetSem,
+        totalClasses: document.getElementById('entryTotalClasses').value,
+        attendedClasses: document.getElementById('entryAttendedClasses').value,
+        isCondoned: document.getElementById('entryIsCondoned').checked,
+        cia1: document.getElementById('entryCia1').value || null,
+        cia2: document.getElementById('entryCia2').value || null,
+        assignment: document.getElementById('entryAsg').value || null,
+        eseMarks: document.getElementById('entryEse').value || null,
+        isAbsent: document.getElementById('entryIsAbsent').checked
+      };
+
+      try {
+        const res = await fetch('/api/marks/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Subject attendance & marks saved successfully!');
+          await loadStudentSubjectAttendanceList();
+          loadGradeSheet();
+          loadOverview();
+          loadDefaulters();
+        } else {
+          showToast(data.error || 'Failed to save marks', false);
+        }
+      } catch (err) {
+        showToast('Network error saving marks', false);
+      }
+    }
+
+    function resetMarksForm() {
+      document.getElementById('formMarks').reset();
+      toggleAbsentInput(false);
+      updateAttendancePreview();
+    }
+
+    // Load Defaulters Table (No Wrapping Bugs, Perfectly Aligned)
+    async function loadDefaulters() {
+      const sem = document.getElementById('selDefaulterSem') ? document.getElementById('selDefaulterSem').value : 'ALL';
+      const dept = document.getElementById('selDefaulterDept') ? document.getElementById('selDefaulterDept').value : 'ALL';
+      try {
+        const res = await fetch(`/api/defaulters?sem=${sem}&dept=${dept}`);
+        const list = await res.json();
+        const tbody = document.getElementById('tblDefaultersBody');
+        tbody.innerHTML = '';
+
+        if (!list || list.length === 0) {
+          const semLabel = (sem === 'ALL') ? 'All Semesters' : `Semester ${sem}`;
+          const deptLabel = (dept === 'ALL') ? 'All Departments' : `${dept} Department`;
+          tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400 font-semibold">No attendance defaulters (&lt;75%) found for ${semLabel} (${deptLabel}).</td></tr>`;
+          return;
+        }
+
+        list.forEach(r => {
+          let badge, actionBtn;
+          if (r.attendancePct < 65) {
+            badge = '<span class="whitespace-nowrap inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-800 border border-rose-200"><i class="fa-solid fa-ban text-[10px] mr-1.5"></i>BARRED (Grade SA)</span>';
+            actionBtn = '<span class="whitespace-nowrap text-xs text-slate-400 font-bold">Barred (&lt;65%)</span>';
+          } else if (r.isCondoned) {
+            badge = '<span class="whitespace-nowrap inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200"><i class="fa-solid fa-check text-[10px] mr-1.5"></i>CONDONED (Eligible)</span>';
+            actionBtn = `<button onclick="toggleCondonation(${r.enrollmentId}, false)" class="whitespace-nowrap px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow-xs transition">Revoke Condonation</button>`;
+          } else {
+            badge = '<span class="whitespace-nowrap inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200"><i class="fa-solid fa-clock text-[10px] mr-1.5"></i>REQUIRES CONDONATION</span>';
+            actionBtn = `<button onclick="toggleCondonation(${r.enrollmentId}, true)" class="whitespace-nowrap px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs transition">Approve Medical</button>`;
+          }
+
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+              <td class="py-3.5 px-6 font-mono font-bold text-slate-900 whitespace-nowrap">${r.rollNo}</td>
+              <td class="py-3.5 px-6 font-bold text-slate-800 whitespace-nowrap">${r.studentName}</td>
+              <td class="py-3.5 px-4 text-center font-bold text-indigo-700 whitespace-nowrap">${r.department}</td>
+              <td class="py-3.5 px-4 text-center font-mono font-semibold text-slate-700 whitespace-nowrap">${r.courseCode}</td>
+              <td class="py-3.5 px-6 text-center font-mono font-bold text-slate-800 whitespace-nowrap">${r.attendedClasses} / ${r.totalClasses}</td>
+              <td class="py-3.5 px-6 text-center font-mono font-black ${r.attendancePct < 65 ? 'text-rose-600' : 'text-amber-600'} whitespace-nowrap">${Number(r.attendancePct).toFixed(1)}%</td>
+              <td class="py-3.5 px-6 text-center whitespace-nowrap">${badge}</td>
+              <td class="py-3.5 px-6 text-center whitespace-nowrap">${actionBtn}</td>
+            </tr>
+          `;
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    async function toggleCondonation(enrollmentId, isCondoned) {
+      try {
+        const res = await fetch('/api/condonation/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ enrollmentId, isCondoned })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Medical Condonation status updated successfully.');
+          loadDefaulters();
+          loadOverview();
+        }
+      } catch (e) { showToast('Error toggling condonation', false); }
+    }
+
+    // Submit New Student Registration
+    async function submitNewStudent(e) {
+      e.preventDefault();
+      const payload = {
+        rollNo: document.getElementById('regRoll').value.trim().toUpperCase(),
+        name: document.getElementById('regName').value.trim(),
+        department: document.getElementById('regDept').value,
+        semester: document.getElementById('regSem').value
+      };
+      try {
+        const res = await fetch('/api/students', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          showToast('Student ' + payload.rollNo + ' registered successfully!');
+          document.getElementById('formNewStudent').reset();
+          refreshAll();
+        } else showToast('Failed to register student', false);
+      } catch (err) { showToast('Network error', false); }
+    }
+
+    // Submit New Course to Catalog
+    async function submitNewCourse(e) {
+      e.preventDefault();
+      const payload = {
+        courseCode: document.getElementById('courseCode').value.trim().toUpperCase(),
+        title: document.getElementById('courseTitle').value.trim(),
+        credits: document.getElementById('courseCredits').value,
+        courseType: document.getElementById('courseType').value,
+        semester: document.getElementById('courseSem').value
+      };
+      try {
+        const res = await fetch('/api/courses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          showToast('Course ' + payload.courseCode + ' added to catalog!');
+          document.getElementById('formNewCourse').reset();
+          refreshAll();
+        } else showToast('Failed to add course', false);
+      } catch (err) { showToast('Network error', false); }
+    }
+
+    // Quick Batch Enroll in All Semester Courses
+    async function submitBatchEnroll() {
+      const roll = document.getElementById('batchStudent').value;
+      const sem = document.getElementById('batchSem').value;
+      if (!roll) {
+        showToast('Please select a student candidate.', false);
+        return;
+      }
+      try {
+        const res = await fetch('/api/enroll', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rollNo: roll,
+            courseCodes: 'ALL',
+            semester: sem,
+            totalClasses: 50,
+            attendedClasses: 46,
+            isCondoned: false
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Successfully enrolled ${roll} into ${data.enrolledCount} courses for Semester ${sem}!`);
+          refreshAll();
+        } else {
+          showToast('Failed batch enrollment', false);
+        }
+      } catch (err) {
+        showToast('Network error during batch enrollment', false);
+      }
+    }
+  </script>
+</body>
+</html>
